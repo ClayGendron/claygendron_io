@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clay Gendron — The Grid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Open+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --fg: #141414;
+    --muted: #666666;
+    --subtle: #999999;
+    --border: #e5e5e5;
+    --accent: #C2452D;
+    --accent-hover: #A53822;
+    --accent-subtle: rgba(194, 69, 45, 0.06);
+    --dark-bg: #0f0f0f;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Open Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --radius: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,250,250,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 3rem;
+    height: 3.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--fg); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--subtle);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #34c759;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 3rem 3rem;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card-main {
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 360px;
+  }
+
+  .hero-card-main .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 1rem;
+  }
+
+  .hero-card-main h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .hero-card-main p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 440px;
+    margin-top: 1.5rem;
+  }
+
+  .hero-card-main .hero-ctas {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+
+  /* Small info cards on the right */
+  .hero-info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-info-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-info-value {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--fg);
+  }
+
+  .hero-info-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+
+  /* ---- BUTTONS ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-dark {
+    background: var(--fg);
+    color: #fff;
+  }
+
+  .btn-dark:hover { background: #333; }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+
+  /* ---- BENTO GRID SECTIONS ---- */
+  .bento-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 3rem 3rem;
+  }
+
+  .bento-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .bento-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--subtle);
+  }
+
+  .bento-link {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .bento-link:hover { color: var(--accent); }
+
+  /* Projects bento */
+  .projects-bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-card:hover {
+    border-color: rgba(194, 69, 45, 0.3);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .project-card.featured {
+    grid-column: span 2;
+  }
+
+  .project-card-num {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+    margin-bottom: 1rem;
+  }
+
+  .project-card-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .project-card:hover .project-card-title {
+    color: var(--accent);
+  }
+
+  .project-card-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .project-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+  }
+
+  .project-card-tags {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.03em;
+    color: var(--subtle);
+    padding: 0.2rem 0.5rem;
+    background: var(--bg);
+    border-radius: 3px;
+  }
+
+  .project-card-status {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--subtle);
+  }
+
+  .status-active {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #34c759;
+  }
+
+  .status-completed {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--subtle);
+  }
+
+  /* ---- DARK FEATURED SECTION ---- */
+  .dark-section {
+    background: var(--dark-bg);
+    padding: 4rem 3rem;
+    margin: 1.5rem 0;
+  }
+
+  .dark-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .dark-section .bento-label {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .dark-section .bento-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .dark-section .bento-link {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .dark-section .bento-link:hover {
+    color: var(--accent);
+  }
+
+  .blog-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .blog-bento-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+
+  .blog-bento-card:hover {
+    border-color: rgba(194, 69, 45, 0.35);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .blog-bento-date {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 0.8rem;
+  }
+
+  .blog-bento-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 0.6rem;
+    transition: color 0.2s;
+  }
+
+  .blog-bento-card:hover .blog-bento-title {
+    color: var(--accent);
+  }
+
+  .blog-bento-excerpt {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.55;
+  }
+
+  .blog-bento-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .blog-bento-tag {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.25);
+    padding: 0.15rem 0.4rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 3px;
+  }
+
+  /* ---- ABOUT + CONTACT BENTO ---- */
+  .bottom-bento {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 1rem;
+  }
+
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+  }
+
+  .about-card-text {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 480px;
+  }
+
+  .about-card-text + .about-card-text {
+    margin-top: 1rem;
+  }
+
+  .about-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.5rem;
+  }
+
+  .skill-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+    padding: 0.25rem 0.6rem;
+    background: var(--bg);
+    border-radius: 3px;
+  }
+
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .contact-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    color: var(--accent);
+    border-color: rgba(194, 69, 45, 0.2);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 3rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-inner { padding: 0 1.5rem; }
+    .hero { padding: 3rem 1.5rem 2rem; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-card-main { min-height: auto; }
+    .bento-section { padding: 0 1.5rem 2rem; }
+    .projects-bento { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; }
+    .dark-section { padding: 3rem 1.5rem; }
+    .blog-bento { grid-template-columns: 1fr; }
+    .bottom-bento { grid-template-columns: 1fr; }
+    .footer { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="#" class="nav-logo">Clay Gendron</a>
+      <ul class="nav-links">
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="nav-status">
+      <span class="status-dot"></span>
+      Available
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-card hero-card-main">
+      <div>
+        <p class="hero-label">Data Scientist & AI Engineer</p>
+        <h1>Clay<br>Gendron</h1>
+        <p>Building AI-powered tools that solve real problems. Leading GenAI at SNHU, creating systems that make education more accessible.</p>
+      </div>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-dark">View work →</a>
+        <a href="#" class="btn btn-outline">About me</a>
+      </div>
+    </div>
+    <div style="display: grid; gap: 1rem;">
+      <div class="hero-info-card">
+        <p class="hero-info-label">Currently</p>
+        <p class="hero-info-value">Lead GenAI Engineer</p>
+        <p class="hero-info-sub">@ Southern New Hampshire University</p>
+      </div>
+      <div class="hero-info-card">
+        <p class="hero-info-label">Focus Areas</p>
+        <p class="hero-info-value">LangGraph · RAG · Graph Databases</p>
+        <p class="hero-info-sub">Python, Rust, TypeScript</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS BENTO -->
+<section class="bento-section">
+  <div class="bento-header">
+    <span class="bento-label">Projects</span>
+    <a href="#" class="bento-link">View all →</a>
+  </div>
+  <div class="projects-bento">
+    <a href="#" class="project-card featured">
+      <span class="project-card-num">01</span>
+      <h3 class="project-card-title">AILA</h3>
+      <p class="project-card-desc">AI Learning Assistant designed to tutor students while maintaining academic integrity. Built for scale at SNHU with LangGraph-based agent architectures.</p>
+      <div class="project-card-footer">
+        <div class="project-card-tags">
+          <span class="tag">AI/ML</span>
+          <span class="tag">Education</span>
+          <span class="tag">LangGraph</span>
+          <span class="tag">Azure</span>
+        </div>
+        <div class="project-card-status">
+          <span class="status-active"></span>
+          Active
+        </div>
+      </div>
+    </a>
+    <a href="#" class="project-card featured">
+      <span class="project-card-num">02</span>
+      <h3 class="project-card-title">QuiverDB</h3>
+      <p class="project-card-desc">A graph database positioned as "DuckDB for graph retrieval" — fast, embeddable, and designed for AI workloads. Written in Rust.</p>
+      <div class="project-card-footer">
+        <div class="project-card-tags">
+          <span class="tag">Rust</span>
+          <span class="tag">Graph</span>
+          <span class="tag">Database</span>
+        </div>
+        <div class="project-card-status">
+          <span class="status-active"></span>
+          Active
+        </div>
+      </div>
+    </a>
+    <a href="#" class="project-card">
+      <span class="project-card-num">03</span>
+      <h3 class="project-card-title">Claude Code Projects</h3>
+      <p class="project-card-desc">Tools and utilities exploring AI-assisted development.</p>
+      <div class="project-card-footer">
+        <div class="project-card-tags">
+          <span class="tag">AI</span>
+          <span class="tag">Tooling</span>
+        </div>
+        <div class="project-card-status">
+          <span class="status-active"></span>
+          Active
+        </div>
+      </div>
+    </a>
+    <a href="#" class="project-card">
+      <span class="project-card-num">04</span>
+      <h3 class="project-card-title">Data Viz Experiments</h3>
+      <p class="project-card-desc">Interactive visualizations and data storytelling.</p>
+      <div class="project-card-footer">
+        <div class="project-card-tags">
+          <span class="tag">D3.js</span>
+          <span class="tag">TypeScript</span>
+        </div>
+        <div class="project-card-status">
+          <span class="status-completed"></span>
+          Done
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- DARK BLOG SECTION -->
+<section class="dark-section">
+  <div class="dark-inner">
+    <div class="bento-header">
+      <span class="bento-label">Writing</span>
+      <a href="#" class="bento-link">All posts →</a>
+    </div>
+    <div class="blog-bento">
+      <a href="#" class="blog-bento-card">
+        <p class="blog-bento-date">Jan 15, 2025 · 8 min</p>
+        <h3 class="blog-bento-title">Building AILA: Lessons from AI Tutoring at Scale</h3>
+        <p class="blog-bento-excerpt">What I learned building an AI tutor that serves thousands of students while respecting academic integrity.</p>
+        <div class="blog-bento-meta">
+          <span class="blog-bento-tag">AI</span>
+          <span class="blog-bento-tag">Education</span>
+          <span class="blog-bento-tag">LangGraph</span>
+        </div>
+      </a>
+      <a href="#" class="blog-bento-card">
+        <p class="blog-bento-date">Jan 08, 2025 · 6 min</p>
+        <h3 class="blog-bento-title">Graph Retrieval Patterns for AI Applications</h3>
+        <p class="blog-bento-excerpt">Why graph-based retrieval might be the missing piece in your RAG pipeline.</p>
+        <div class="blog-bento-meta">
+          <span class="blog-bento-tag">Databases</span>
+          <span class="blog-bento-tag">RAG</span>
+        </div>
+      </a>
+      <a href="#" class="blog-bento-card">
+        <p class="blog-bento-date">Dec 20, 2024 · 10 min</p>
+        <h3 class="blog-bento-title">Taking LangGraph to Production</h3>
+        <p class="blog-bento-excerpt">Practical lessons from deploying LangGraph agents in a production environment.</p>
+        <div class="blog-bento-meta">
+          <span class="blog-bento-tag">LangGraph</span>
+          <span class="blog-bento-tag">Production</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT + CONTACT BENTO -->
+<section class="bento-section" style="padding-top: 1.5rem;">
+  <div class="bottom-bento">
+    <div class="about-card">
+      <div class="bento-label" style="margin-bottom: 1.5rem;">About</div>
+      <p class="about-card-text">
+        I'm a data scientist and AI engineer focused on building tools that make a meaningful difference. Currently leading GenAI efforts at SNHU, where I design and deploy intelligent systems that serve thousands of students.
+      </p>
+      <p class="about-card-text">
+        My work sits at the intersection of machine learning, software engineering, and education.
+      </p>
+      <div class="about-skills">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Rust</span>
+        <span class="skill-tag">TypeScript</span>
+        <span class="skill-tag">LangGraph</span>
+        <span class="skill-tag">Azure</span>
+        <span class="skill-tag">Databricks</span>
+        <span class="skill-tag">FastAPI</span>
+        <span class="skill-tag">React</span>
+      </div>
+    </div>
+    <div class="contact-card">
+      <div>
+        <h3>Let's connect.</h3>
+        <p>Open to conversations about AI, graph databases, and building thoughtful software.</p>
+      </div>
+      <div class="contact-links">
+        <a href="#" class="contact-link">
+          <span>GitHub</span>
+          <span>↗</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span>LinkedIn</span>
+          <span>↗</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span>Email</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="footer-text">© 2025 Clay Gendron</span>
+  <span class="footer-text">claygendron.io</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clay Gendron — The Longform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Open+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #ffffff;
+    --fg: #141414;
+    --muted: #5a5a5a;
+    --subtle: #999999;
+    --border: #e0e0e0;
+    --accent: #C2452D;
+    --accent-subtle: rgba(194, 69, 45, 0.08);
+    --dark-bg: #0f0f0f;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Open Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 3rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--fg); }
+
+  /* ---- HERO: FULL VIEWPORT ---- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8rem 3rem 6rem;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.75;
+    margin: 0 auto 3rem;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--subtle);
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+
+  /* Diagonal SVG accent behind hero */
+  .hero-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-accent line {
+    stroke: var(--accent);
+    stroke-width: 1;
+    opacity: 0.07;
+  }
+
+  /* ---- ROLE STRIP ---- */
+  .role-strip {
+    background: var(--dark-bg);
+    color: #fff;
+    padding: 4rem 3rem;
+  }
+
+  .role-strip-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .role-item-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 0.5rem;
+  }
+
+  .role-item-value {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  /* ---- ABOUT: FULL WIDTH TEXT ---- */
+  .about-section {
+    padding: 8rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-layout {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 6rem;
+  }
+
+  .about-left .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .label-diamond {
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .label-line {
+    width: 20px;
+    height: 1px;
+    background: var(--border);
+    display: inline-block;
+  }
+
+  .pull-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 300;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    position: sticky;
+    top: 6rem;
+  }
+
+  .pull-quote-line {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-text {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+
+  .about-text + .about-text {
+    margin-top: 1.5rem;
+  }
+
+  /* ---- PROJECTS: ALTERNATING ---- */
+  .projects-section {
+    padding: 0 0 4rem;
+  }
+
+  .projects-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 3rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .projects-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .projects-header .section-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .project-full {
+    border-top: 1px solid var(--border);
+  }
+
+  .project-full-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .project-full:nth-child(even) .project-full-inner {
+    direction: rtl;
+  }
+
+  .project-full:nth-child(even) .project-full-inner > * {
+    direction: ltr;
+  }
+
+  .project-full-num {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+    margin-bottom: 1rem;
+  }
+
+  .project-full-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    color: var(--fg);
+    display: inline-block;
+    transition: color 0.2s;
+  }
+
+  .project-full-title:hover {
+    color: var(--accent);
+  }
+
+  .project-full-desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-full-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .ptag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.03em;
+    color: var(--subtle);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+  }
+
+  .project-full-highlights {
+    list-style: none;
+    padding-top: 1rem;
+  }
+
+  .project-full-highlights li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .highlight-diamond {
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+
+  /* ---- BLOG SECTION (full-width dark) ---- */
+  .blog-dark {
+    background: var(--dark-bg);
+    padding: 6rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blog-dark-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .blog-dark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+
+  .blog-dark-header h2 {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .blog-dark-header a {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .blog-dark-header a:hover { color: var(--accent); }
+
+  .blog-posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .blog-post-item {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 2rem;
+    align-items: baseline;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.3s;
+  }
+
+  .blog-post-item:last-child {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .blog-post-item:hover {
+    border-color: rgba(194, 69, 45, 0.35);
+  }
+
+  .blog-post-date {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .blog-post-content h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .blog-post-item:hover .blog-post-content h3 {
+    color: var(--accent);
+  }
+
+  .blog-post-content p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+  }
+
+  .blog-post-read {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.2);
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .blog-post-item:hover .blog-post-read {
+    color: var(--accent);
+  }
+
+  .blog-diagonal {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .blog-diagonal line {
+    stroke: var(--accent);
+    stroke-width: 1;
+    opacity: 0.06;
+  }
+
+  /* ---- PULL QUOTE SECTION ---- */
+  .quote-section {
+    padding: 8rem 3rem;
+    text-align: center;
+  }
+
+  .quote-section blockquote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 300;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .quote-diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    margin: 0 auto 2rem;
+  }
+
+  .quote-attr {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--subtle);
+    letter-spacing: 0.1em;
+    margin-top: 1.5rem;
+  }
+
+  /* ---- CONTACT STRIP ---- */
+  .contact-section {
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 4rem;
+  }
+
+  .contact-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .contact-section p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    line-height: 1.7;
+  }
+
+  .contact-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    font-size: 0.88rem;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    color: var(--accent);
+    border-color: rgba(194, 69, 45, 0.2);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-inner { padding: 0 1.5rem; }
+    .hero { padding: 6rem 1.5rem 4rem; }
+    .role-strip { padding: 3rem 1.5rem; }
+    .role-strip-inner { grid-template-columns: 1fr 1fr; }
+    .about-section { padding: 5rem 1.5rem; }
+    .about-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .pull-quote { position: static; }
+    .projects-header { padding: 0 1.5rem 3rem; }
+    .project-full-inner { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
+    .project-full:nth-child(even) .project-full-inner { direction: ltr; }
+    .blog-dark { padding: 4rem 1.5rem; }
+    .blog-post-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .blog-post-date { order: -1; }
+    .blog-post-read { display: none; }
+    .quote-section { padding: 5rem 1.5rem; }
+    .contact-section { grid-template-columns: 1fr; padding: 4rem 1.5rem; gap: 2rem; }
+    .footer { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Clay Gendron</a>
+    <ul class="nav-links">
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="hero-accent" viewBox="0 0 1440 900" preserveAspectRatio="none">
+    <line x1="0" y1="85%" x2="30%" y2="0" />
+  </svg>
+
+  <p class="hero-eyebrow">Data Scientist &amp; AI Engineer</p>
+  <h1 class="hero-title">Clay Gendron</h1>
+  <p class="hero-subtitle">
+    Building AI-powered tools that solve real problems. Creating systems that make education more accessible and effective.
+  </p>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ROLE STRIP -->
+<section class="role-strip">
+  <div class="role-strip-inner">
+    <div>
+      <p class="role-item-label">Role</p>
+      <p class="role-item-value">Lead GenAI Engineer</p>
+    </div>
+    <div>
+      <p class="role-item-label">Organization</p>
+      <p class="role-item-value">SNHU</p>
+    </div>
+    <div>
+      <p class="role-item-label">Focus</p>
+      <p class="role-item-value">AI/ML Systems</p>
+    </div>
+    <div>
+      <p class="role-item-label">Stack</p>
+      <p class="role-item-value">Python · Rust · TS</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="about-layout">
+    <div class="about-left">
+      <div class="section-label">
+        <span class="label-diamond"></span>
+        <span class="label-line"></span>
+        <span>About</span>
+      </div>
+      <div class="pull-quote">
+        <div class="pull-quote-line"></div>
+        "I build production-grade AI that's thoughtful about both capability and responsibility."
+      </div>
+    </div>
+    <div>
+      <p class="about-text">
+        I'm a data scientist and AI engineer focused on building tools that make a meaningful difference. Currently leading GenAI efforts at Southern New Hampshire University, where I design and deploy intelligent systems that serve thousands of students.
+      </p>
+      <p class="about-text">
+        My work sits at the intersection of machine learning, software engineering, and education. I believe the most impactful AI isn't the most complex — it's the most considered. Every system I build starts with a real problem and ends with a real solution.
+      </p>
+      <p class="about-text">
+        When I'm not shipping production ML systems, I'm working on QuiverDB — an embeddable graph database written in Rust — or exploring the frontiers of AI-assisted development with Claude Code.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section">
+  <div class="projects-header">
+    <div class="projects-header-left">
+      <span class="label-diamond"></span>
+      <span class="label-line"></span>
+      <span class="section-title" style="font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--subtle);">Selected Work</span>
+    </div>
+  </div>
+
+  <div class="project-full">
+    <div class="project-full-inner">
+      <div>
+        <p class="project-full-num">01</p>
+        <a href="#" class="project-full-title">AILA</a>
+        <p class="project-full-desc">
+          AI Learning Assistant designed to tutor students while maintaining academic integrity. Built for scale at SNHU with LangGraph-based agent architectures that create conversational flows guiding students through problems rather than solving them directly.
+        </p>
+        <div class="project-full-tags">
+          <span class="ptag">AI/ML</span>
+          <span class="ptag">Education</span>
+          <span class="ptag">LangGraph</span>
+          <span class="ptag">Azure</span>
+        </div>
+      </div>
+      <ul class="project-full-highlights">
+        <li><span class="highlight-diamond"></span> Serves thousands of students across SNHU</li>
+        <li><span class="highlight-diamond"></span> Maintains academic integrity through guided learning</li>
+        <li><span class="highlight-diamond"></span> Built on Azure with Databricks integration</li>
+        <li><span class="highlight-diamond"></span> Uses LangGraph for complex conversation flows</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="project-full">
+    <div class="project-full-inner">
+      <div>
+        <p class="project-full-num">02</p>
+        <a href="#" class="project-full-title">QuiverDB</a>
+        <p class="project-full-desc">
+          A graph database positioned as "DuckDB for graph retrieval" — fast, embeddable, and designed for AI workloads. The goal is to make graph-based retrieval as easy as spinning up a SQLite database, with production-grade performance.
+        </p>
+        <div class="project-full-tags">
+          <span class="ptag">Rust</span>
+          <span class="ptag">Graph</span>
+          <span class="ptag">Database</span>
+          <span class="ptag">AI Infra</span>
+        </div>
+      </div>
+      <ul class="project-full-highlights">
+        <li><span class="highlight-diamond"></span> Embeddable with zero configuration</li>
+        <li><span class="highlight-diamond"></span> Optimized for AI retrieval patterns</li>
+        <li><span class="highlight-diamond"></span> Written in Rust for performance</li>
+        <li><span class="highlight-diamond"></span> Simple API inspired by DuckDB</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="project-full">
+    <div class="project-full-inner">
+      <div>
+        <p class="project-full-num">03</p>
+        <a href="#" class="project-full-title">Claude Code Projects</a>
+        <p class="project-full-desc">
+          A collection of tools and utilities built with Claude Code, exploring the boundaries of AI-assisted development and what becomes possible when you treat AI as a true collaborator.
+        </p>
+        <div class="project-full-tags">
+          <span class="ptag">AI</span>
+          <span class="ptag">Tooling</span>
+          <span class="ptag">Python</span>
+          <span class="ptag">TypeScript</span>
+        </div>
+      </div>
+      <div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="quote-section">
+  <div class="quote-diamond"></div>
+  <blockquote>
+    "The most impactful AI isn't the most complex — it's the most considered."
+  </blockquote>
+  <p class="quote-attr">— On building for education</p>
+</section>
+
+<!-- BLOG (DARK) -->
+<section class="blog-dark">
+  <svg class="blog-diagonal" viewBox="0 0 1440 500" preserveAspectRatio="none">
+    <line x1="100%" y1="0" x2="70%" y2="100%" />
+    <line x1="0" y1="80%" x2="20%" y2="0" />
+  </svg>
+
+  <div class="blog-dark-inner">
+    <div class="blog-dark-header">
+      <h2>Writing</h2>
+      <a href="#">All posts →</a>
+    </div>
+
+    <div class="blog-posts-list">
+      <a href="#" class="blog-post-item">
+        <span class="blog-post-date">Jan 15, 2025</span>
+        <div class="blog-post-content">
+          <h3>Building AILA: Lessons from AI Tutoring at Scale</h3>
+          <p>What I learned building an AI tutor that serves thousands of students while respecting academic integrity.</p>
+        </div>
+        <span class="blog-post-read">8 min read →</span>
+      </a>
+      <a href="#" class="blog-post-item">
+        <span class="blog-post-date">Jan 08, 2025</span>
+        <div class="blog-post-content">
+          <h3>Graph Retrieval Patterns for AI Applications</h3>
+          <p>Exploring why graph-based retrieval might be the missing piece in your RAG pipeline.</p>
+        </div>
+        <span class="blog-post-read">6 min read →</span>
+      </a>
+      <a href="#" class="blog-post-item">
+        <span class="blog-post-date">Dec 20, 2024</span>
+        <div class="blog-post-content">
+          <h3>Taking LangGraph to Production</h3>
+          <p>Practical lessons from deploying LangGraph agents in a production environment.</p>
+        </div>
+        <span class="blog-post-read">10 min read →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div>
+    <h2>Let's build<br>something together.</h2>
+    <p>Open to conversations about AI, graph databases, and building thoughtful software that serves people well.</p>
+  </div>
+  <div class="contact-right">
+    <a href="#" class="contact-link">
+      <span>GitHub</span>
+      <span>↗</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span>LinkedIn</span>
+      <span>↗</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span>Email</span>
+      <span>↗</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span>Schedule a call</span>
+      <span>↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>© 2025 Clay Gendron</span>
+  <span>claygendron.io</span>
+</footer>
+
+</body>
+</html>

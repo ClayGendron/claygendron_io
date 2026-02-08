@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clay Gendron — Brutalist Monolith</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,300;1,6..72,400&family=Open+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f2f0ec;
+    --fg: #0a0a0a;
+    --muted: #555;
+    --subtle: #888;
+    --border: #0a0a0a;
+    --border-thick: 3px;
+    --accent: #C2452D;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Open Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---- NAV: HEAVY ---- */
+  .nav-brutal {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 0;
+  }
+
+  .nav-brutal-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .nav-logo-brutal {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.5rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-links-brutal {
+    display: flex;
+    list-style: none;
+    flex: 1;
+  }
+
+  .nav-links-brutal a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.1s;
+  }
+
+  .nav-links-brutal a:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .nav-status-brutal {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.3);
+    gap: 0.5rem;
+  }
+
+  .nav-status-brutal::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+  }
+
+  /* ---- HERO: RAW ---- */
+  .hero-brutal {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-left: var(--border-thick) solid var(--border);
+    border-right: var(--border-thick) solid var(--border);
+    border-bottom: var(--border-thick) solid var(--border);
+  }
+
+  .hero-brutal-top {
+    padding: 3rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .hero-brutal-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero-brutal-label::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+  }
+
+  .hero-brutal-name {
+    font-family: var(--font-body);
+    font-size: clamp(4rem, 12vw, 10rem);
+    font-weight: 800;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+
+  .hero-brutal-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-brutal-desc {
+    padding: 2rem 3rem;
+    border-right: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .hero-brutal-desc p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  .hero-brutal-desc .hero-ctas-brutal {
+    display: flex;
+    gap: 0;
+    margin-top: 1.5rem;
+  }
+
+  .btn-brutal {
+    padding: 0.7rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 2px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .btn-brutal + .btn-brutal {
+    border-left: none;
+  }
+
+  .btn-brutal:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .btn-brutal-fill {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .btn-brutal-fill:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .hero-brutal-meta {
+    padding: 2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .hbm-item-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 0.2rem;
+  }
+
+  .hbm-item-value {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  /* ---- SECTION CONTAINER ---- */
+  .section-brutal {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-left: var(--border-thick) solid var(--border);
+    border-right: var(--border-thick) solid var(--border);
+    border-bottom: var(--border-thick) solid var(--border);
+  }
+
+  .section-brutal-header {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-brutal-header h2 {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .section-brutal-header a {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.4);
+    transition: color 0.15s;
+  }
+
+  .section-brutal-header a:hover { color: var(--accent); }
+
+  /* ---- PROJECTS ---- */
+  .project-brutal {
+    display: grid;
+    grid-template-columns: 80px 1fr 2fr 60px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    transition: background 0.1s;
+  }
+
+  .project-brutal:last-child { border-bottom: none; }
+
+  .project-brutal:hover { background: rgba(0,0,0,0.03); }
+
+  .pb-cell {
+    padding: 1.5rem;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+  }
+
+  .pb-cell:last-child { border-right: none; justify-content: center; }
+
+  .pb-num {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: rgba(0,0,0,0.15);
+  }
+
+  .project-brutal:hover .pb-num { color: var(--accent); }
+
+  .pb-info h3 {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.2rem;
+    transition: color 0.15s;
+  }
+
+  .project-brutal:hover .pb-info h3 { color: var(--accent); }
+
+  .pb-info .pb-tags {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .pb-tag {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: var(--subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .pb-tag + .pb-tag::before {
+    content: '/';
+    margin-right: 0.3rem;
+    color: rgba(0,0,0,0.15);
+  }
+
+  .pb-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .pb-arrow {
+    font-size: 1rem;
+    color: rgba(0,0,0,0.15);
+    transition: all 0.15s;
+  }
+
+  .project-brutal:hover .pb-arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  /* ---- ABOUT + BLOG: SPLIT ---- */
+  .split-brutal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .split-brutal-left {
+    border-right: var(--border-thick) solid var(--border);
+  }
+
+  .split-about-body {
+    padding: 2rem 2rem;
+  }
+
+  .split-about-body p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .split-about-body p + p { margin-top: 1rem; }
+
+  .split-about-skills {
+    padding: 1rem 2rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .skill-brutal {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid rgba(0,0,0,0.15);
+    margin: -0.5px;
+    transition: all 0.1s;
+  }
+
+  .skill-brutal:hover {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+    z-index: 1;
+    position: relative;
+  }
+
+  /* Blog items in right split */
+  .blog-brutal-item {
+    display: block;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.1s;
+  }
+
+  .blog-brutal-item:last-child { border-bottom: none; }
+
+  .blog-brutal-item:hover { background: rgba(0,0,0,0.03); }
+
+  .bbi-date {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--subtle);
+    margin-bottom: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bbi-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 400;
+    transition: color 0.15s;
+  }
+
+  .blog-brutal-item:hover .bbi-title { color: var(--accent); }
+
+  .bbi-excerpt {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    line-height: 1.5;
+  }
+
+  /* ---- CONTACT ---- */
+  .contact-brutal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-brutal-left {
+    background: var(--accent);
+    color: #fff;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contact-brutal-left h3 {
+    font-family: var(--font-body);
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  .contact-brutal-left p {
+    font-size: 0.88rem;
+    margin-top: 1rem;
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  .contact-brutal-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-brutal-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.1s;
+  }
+
+  .contact-brutal-link:last-child { border-bottom: none; }
+
+  .contact-brutal-link:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .contact-brutal-link span:last-child {
+    font-size: 1rem;
+    transition: transform 0.15s;
+  }
+
+  .contact-brutal-link:hover span:last-child {
+    transform: translate(3px, -3px);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer-brutal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .nav-brutal-inner { flex-wrap: wrap; }
+    .nav-links-brutal { flex-wrap: wrap; }
+    .nav-status-brutal { display: none; }
+    .hero-brutal-bottom { grid-template-columns: 1fr; }
+    .hero-brutal-desc { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .hero-brutal-meta { grid-template-columns: 1fr; }
+    .project-brutal { grid-template-columns: 1fr; }
+    .pb-cell { border-right: none; }
+    .pb-num { display: none; }
+    .split-brutal { grid-template-columns: 1fr; }
+    .split-brutal-left { border-right: none; border-bottom: var(--border-thick) solid var(--border); }
+    .contact-brutal-body { grid-template-columns: 1fr; }
+    .hero-brutal-top { padding: 2rem 1.5rem; }
+    .hero-brutal-desc { padding: 1.5rem; }
+    .hero-brutal-meta { padding: 1.5rem; }
+    .split-about-body { padding: 1.5rem; }
+    .split-about-skills { padding: 0.5rem 1.5rem 1.5rem; }
+    .blog-brutal-item { padding: 1rem 1.5rem; }
+    .contact-brutal-left { padding: 2rem 1.5rem; }
+    .contact-brutal-link { padding: 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav-brutal">
+  <div class="nav-brutal-inner">
+    <a href="#" class="nav-logo-brutal">CG</a>
+    <ul class="nav-links-brutal">
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="nav-status-brutal">Available for work</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-brutal">
+  <div class="hero-brutal-top">
+    <div class="hero-brutal-label">Data Scientist & AI Engineer</div>
+    <h1 class="hero-brutal-name">Clay<br>Gendron</h1>
+  </div>
+  <div class="hero-brutal-bottom">
+    <div class="hero-brutal-desc">
+      <p>Building AI-powered tools that solve real problems. Leading GenAI at SNHU, creating systems that make education more accessible and effective.</p>
+      <div class="hero-ctas-brutal">
+        <a href="#" class="btn-brutal btn-brutal-fill">View Work →</a>
+        <a href="#" class="btn-brutal">About</a>
+      </div>
+    </div>
+    <div class="hero-brutal-meta">
+      <div>
+        <p class="hbm-item-label">Role</p>
+        <p class="hbm-item-value">Lead GenAI Engineer</p>
+      </div>
+      <div>
+        <p class="hbm-item-label">Organization</p>
+        <p class="hbm-item-value">SNHU</p>
+      </div>
+      <div>
+        <p class="hbm-item-label">Focus</p>
+        <p class="hbm-item-value">AI/ML Systems</p>
+      </div>
+      <div>
+        <p class="hbm-item-label">Stack</p>
+        <p class="hbm-item-value">Python / Rust / TS</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section-brutal">
+  <div class="section-brutal-header">
+    <h2>Projects</h2>
+    <a href="#">View All →</a>
+  </div>
+
+  <a href="#" class="project-brutal">
+    <div class="pb-cell"><span class="pb-num">01</span></div>
+    <div class="pb-cell pb-info">
+      <div>
+        <h3>AILA</h3>
+        <div class="pb-tags">
+          <span class="pb-tag">AI/ML</span>
+          <span class="pb-tag">Education</span>
+          <span class="pb-tag">LangGraph</span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-cell"><span class="pb-desc">AI Learning Assistant — tutoring at scale with academic integrity. LangGraph-powered agent architectures serving thousands.</span></div>
+    <div class="pb-cell"><span class="pb-arrow">↗</span></div>
+  </a>
+
+  <a href="#" class="project-brutal">
+    <div class="pb-cell"><span class="pb-num">02</span></div>
+    <div class="pb-cell pb-info">
+      <div>
+        <h3>QuiverDB</h3>
+        <div class="pb-tags">
+          <span class="pb-tag">Rust</span>
+          <span class="pb-tag">Graph</span>
+          <span class="pb-tag">Database</span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-cell"><span class="pb-desc">"DuckDB for graph retrieval" — fast, embeddable, designed for AI workloads. Written in Rust.</span></div>
+    <div class="pb-cell"><span class="pb-arrow">↗</span></div>
+  </a>
+
+  <a href="#" class="project-brutal">
+    <div class="pb-cell"><span class="pb-num">03</span></div>
+    <div class="pb-cell pb-info">
+      <div>
+        <h3>Claude Code</h3>
+        <div class="pb-tags">
+          <span class="pb-tag">AI</span>
+          <span class="pb-tag">Tooling</span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-cell"><span class="pb-desc">Tools exploring the boundaries of AI-assisted development.</span></div>
+    <div class="pb-cell"><span class="pb-arrow">↗</span></div>
+  </a>
+
+  <a href="#" class="project-brutal">
+    <div class="pb-cell"><span class="pb-num">04</span></div>
+    <div class="pb-cell pb-info">
+      <div>
+        <h3>Data Viz</h3>
+        <div class="pb-tags">
+          <span class="pb-tag">D3.js</span>
+          <span class="pb-tag">TypeScript</span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-cell"><span class="pb-desc">Interactive visualizations and data storytelling experiments.</span></div>
+    <div class="pb-cell"><span class="pb-arrow">↗</span></div>
+  </a>
+</section>
+
+<!-- ABOUT + BLOG SPLIT -->
+<div class="section-brutal">
+  <div class="split-brutal">
+    <!-- ABOUT -->
+    <div class="split-brutal-left">
+      <div class="section-brutal-header">
+        <h2>About</h2>
+      </div>
+      <div class="split-about-body">
+        <p>I'm a data scientist and AI engineer focused on building tools that make a meaningful difference. Currently leading GenAI efforts at SNHU, where I design and deploy intelligent systems serving thousands of students.</p>
+        <p>My work sits at the intersection of machine learning, software engineering, and education — building production-grade AI that's thoughtful about both capability and responsibility.</p>
+      </div>
+      <div class="split-about-skills">
+        <span class="skill-brutal">Python</span>
+        <span class="skill-brutal">Rust</span>
+        <span class="skill-brutal">TypeScript</span>
+        <span class="skill-brutal">LangGraph</span>
+        <span class="skill-brutal">Azure</span>
+        <span class="skill-brutal">Databricks</span>
+        <span class="skill-brutal">FastAPI</span>
+        <span class="skill-brutal">React</span>
+        <span class="skill-brutal">D3.js</span>
+        <span class="skill-brutal">Arrow</span>
+      </div>
+    </div>
+
+    <!-- BLOG -->
+    <div>
+      <div class="section-brutal-header">
+        <h2>Writing</h2>
+        <a href="#">All Posts →</a>
+      </div>
+      <a href="#" class="blog-brutal-item">
+        <div class="bbi-date">
+          <span>2025-01-15</span>
+          <span>8 MIN</span>
+        </div>
+        <h3 class="bbi-title">Building AILA: Lessons from AI Tutoring at Scale</h3>
+        <p class="bbi-excerpt">What I learned building an AI tutor that serves thousands of students while respecting academic integrity.</p>
+      </a>
+      <a href="#" class="blog-brutal-item">
+        <div class="bbi-date">
+          <span>2025-01-08</span>
+          <span>6 MIN</span>
+        </div>
+        <h3 class="bbi-title">Graph Retrieval Patterns for AI Applications</h3>
+        <p class="bbi-excerpt">Why graph-based retrieval might be the missing piece in your RAG pipeline.</p>
+      </a>
+      <a href="#" class="blog-brutal-item">
+        <div class="bbi-date">
+          <span>2024-12-20</span>
+          <span>10 MIN</span>
+        </div>
+        <h3 class="bbi-title">Taking LangGraph to Production</h3>
+        <p class="bbi-excerpt">Practical lessons from deploying LangGraph agents in production.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="section-brutal">
+  <div class="section-brutal-header">
+    <h2>Contact</h2>
+  </div>
+  <div class="contact-brutal-body">
+    <div class="contact-brutal-left">
+      <h3>Let's<br>Build<br>Together.</h3>
+      <p>Open to conversations about AI, graph databases, and thoughtful software.</p>
+    </div>
+    <div class="contact-brutal-right">
+      <a href="#" class="contact-brutal-link">
+        <span>GitHub</span>
+        <span>↗</span>
+      </a>
+      <a href="#" class="contact-brutal-link">
+        <span>LinkedIn</span>
+        <span>↗</span>
+      </a>
+      <a href="#" class="contact-brutal-link">
+        <span>Email</span>
+        <span>↗</span>
+      </a>
+      <a href="#" class="contact-brutal-link">
+        <span>Schedule</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-brutal">
+  <span>© 2025 Clay Gendron</span>
+  <span>claygendron.io</span>
+</footer>
+
+</body>
+</html>

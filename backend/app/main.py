@@ -1,0 +1,84 @@
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+
+from app.config import get_settings
+from app.database import init_db, close_db
+from app.routes import contact, analytics, admin
+
+settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifecycle."""
+    # Startup
+    if settings.database_url:
+        await init_db()
+    yield
+    # Shutdown
+    await close_db()
+
+
+app = FastAPI(
+    title=settings.app_name,
+    docs_url="/api/docs" if settings.debug else None,
+    redoc_url="/api/redoc" if settings.debug else None,
+    lifespan=lifespan,
+)
+
+# CORS middleware for development
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include API routes
+app.include_router(contact.router, prefix="/api")
+app.include_router(analytics.router, prefix="/api")
+app.include_router(admin.router, prefix="/api/admin")
+
+
+# Health check endpoint
+@app.get("/api/health")
+async def health_check():
+    return {"status": "healthy", "app": settings.app_name}
+
+
+# Serve static frontend files in production
+# The frontend build output should be in ../frontend/dist
+FRONTEND_DIR = Path(__file__).parent.parent.parent / "frontend" / "dist"
+
+if FRONTEND_DIR.exists():
+    # Serve static assets
+    app.mount(
+        "/assets",
+        StaticFiles(directory=FRONTEND_DIR / "assets"),
+        name="assets",
+    )
+
+    # Serve content directory (for blog posts)
+    CONTENT_DIR = FRONTEND_DIR / "content"
+    if CONTENT_DIR.exists():
+        app.mount(
+            "/content",
+            StaticFiles(directory=CONTENT_DIR),
+            name="content",
+        )
+
+    # Catch-all route for SPA - must be last
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Check if it's a file request
+        file_path = FRONTEND_DIR / full_path
+        if file_path.is_file():
+            return FileResponse(file_path)
+
+        # For all other routes, serve index.html (SPA routing)
+        return FileResponse(FRONTEND_DIR / "index.html")

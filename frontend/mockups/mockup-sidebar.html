@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clay Gendron — Sidebar Magazine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Open+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #ffffff;
+    --sidebar-bg: #0f0f0f;
+    --fg: #141414;
+    --muted: #666;
+    --subtle: #999;
+    --border: #e8e8e8;
+    --accent: #C2452D;
+    --sidebar-w: 280px;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Open Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---- LAYOUT ---- */
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---- SIDEBAR ---- */
+  .sidebar {
+    background: var(--sidebar-bg);
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-w);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 50;
+  }
+
+  .sb-header {
+    margin-bottom: 3rem;
+  }
+
+  .sb-name {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+  }
+
+  .sb-role {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+  }
+
+  .sb-accent-line {
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+    margin: 1.5rem 0;
+  }
+
+  /* Nav links */
+  .sb-nav {
+    list-style: none;
+    margin-bottom: 2rem;
+  }
+
+  .sb-nav li { margin-bottom: 0.2rem; }
+
+  .sb-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.45);
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+  }
+
+  .sb-nav a:hover {
+    color: #fff;
+    border-left-color: var(--accent);
+  }
+
+  .sb-nav a.active {
+    color: #fff;
+    border-left-color: var(--accent);
+  }
+
+  .sb-nav-num {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.2);
+    width: 1.25rem;
+  }
+
+  /* Status */
+  .sb-status {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .sb-status-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .sb-status-value {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 0.2rem;
+  }
+
+  .sb-status-org {
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+
+  .sb-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .sb-link {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: rgba(255,255,255,0.3);
+    transition: color 0.2s;
+  }
+
+  .sb-link:hover { color: var(--accent); }
+
+  .sb-copy {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: rgba(255,255,255,0.15);
+    margin-top: 1.5rem;
+  }
+
+  /* ---- MAIN CONTENT ---- */
+  .main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+  }
+
+  /* Content sections */
+  .content-section {
+    padding: 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    max-width: 900px;
+  }
+
+  .content-section:last-child { border-bottom: none; }
+
+  .cs-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cs-label-diamond {
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  .cs-label-line {
+    width: 20px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ---- HERO (in main) ---- */
+  .hero-sidebar {
+    padding: 6rem 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    max-width: 900px;
+  }
+
+  .hero-sidebar h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-sidebar-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 520px;
+    font-weight: 300;
+  }
+
+  .hero-sidebar-ctas {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .btn-sb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-sb:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .btn-sb-ghost {
+    border-color: var(--border);
+    color: var(--muted);
+  }
+
+  .btn-sb-ghost:hover {
+    border-color: var(--fg);
+    color: var(--fg);
+    background: transparent;
+  }
+
+  /* ---- PROJECTS ---- */
+  .project-sb {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    transition: border-color 0.3s;
+  }
+
+  .project-sb:first-of-type { border-top: 1px solid var(--border); }
+
+  .project-sb:hover { border-color: rgba(194, 69, 45, 0.2); }
+
+  .psb-num {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+    padding-top: 0.25rem;
+  }
+
+  .psb-content h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: color 0.2s;
+  }
+
+  .project-sb:hover .psb-content h3 { color: var(--accent); }
+
+  .psb-content h3 span {
+    font-size: 0.9rem;
+    color: var(--subtle);
+    transition: all 0.2s;
+  }
+
+  .project-sb:hover .psb-content h3 span {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  .psb-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .psb-tags {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .psb-tag {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--subtle);
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--border);
+  }
+
+  /* ---- ABOUT ---- */
+  .about-sb-grid {
+    display: grid;
+    grid-template-columns: 5fr 3fr;
+    gap: 3rem;
+  }
+
+  .about-sb-text {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .about-sb-text + .about-sb-text { margin-top: 1rem; }
+
+  .about-sb-details {
+    padding-top: 0.25rem;
+  }
+
+  .about-detail-item {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-detail-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 0.2rem;
+  }
+
+  .about-detail-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* ---- BLOG ---- */
+  .blog-sb-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+
+  .blog-sb-item:first-of-type { border-top: 1px solid var(--border); }
+
+  .blog-sb-item:hover { border-color: rgba(194, 69, 45, 0.2); }
+
+  .bsb-date {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--subtle);
+  }
+
+  .bsb-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 400;
+    transition: color 0.2s;
+    margin-bottom: 0.25rem;
+  }
+
+  .blog-sb-item:hover .bsb-title { color: var(--accent); }
+
+  .bsb-excerpt {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ---- CONTACT ---- */
+  .contact-sb-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .contact-sb-inner h2 {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .contact-sb-inner p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .contact-sb-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .csb-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .csb-link:hover {
+    color: var(--accent);
+    border-color: rgba(194, 69, 45, 0.2);
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: relative;
+      width: 100%;
+      padding: 1.5rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+    .sb-header { margin-bottom: 0; }
+    .sb-accent-line { display: none; }
+    .sb-nav { display: flex; gap: 0.5rem; margin-bottom: 0; flex-wrap: wrap; }
+    .sb-nav li { margin-bottom: 0; }
+    .sb-nav a { padding: 0.4rem 0.6rem; border-left: none; padding-left: 0; }
+    .sb-nav-num { display: none; }
+    .sb-status { display: none; }
+    .sb-links { display: none; }
+    .sb-copy { display: none; }
+    .main { margin-left: 0; }
+    .hero-sidebar { padding: 3rem 2rem; }
+    .content-section { padding: 3rem 2rem; }
+    .about-sb-grid { grid-template-columns: 1fr; }
+    .contact-sb-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .blog-sb-item { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-header">
+    <h1 class="sb-name">Clay Gendron</h1>
+    <p class="sb-role">Data Scientist &<br>AI Engineer</p>
+  </div>
+
+  <div class="sb-accent-line"></div>
+
+  <ul class="sb-nav">
+    <li>
+      <a href="#" class="active">
+        <span class="sb-nav-num">01</span>
+        Home
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="sb-nav-num">02</span>
+        Projects
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="sb-nav-num">03</span>
+        Blog
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="sb-nav-num">04</span>
+        About
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="sb-nav-num">05</span>
+        Contact
+      </a>
+    </li>
+  </ul>
+
+  <div class="sb-status">
+    <p class="sb-status-label">Currently</p>
+    <p class="sb-status-value">Lead GenAI Engineer</p>
+    <p class="sb-status-org">@ SNHU</p>
+
+    <div class="sb-links">
+      <a href="#" class="sb-link">GitHub</a>
+      <a href="#" class="sb-link">LinkedIn</a>
+      <a href="#" class="sb-link">Email</a>
+    </div>
+
+    <p class="sb-copy">© 2025</p>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero-sidebar">
+    <h1>Building AI tools<br>that solve real<br>problems.</h1>
+    <p class="hero-sidebar-desc">
+      Leading GenAI at SNHU, creating systems that make education more accessible and effective. Focused on production-grade AI that's thoughtful about both capability and responsibility.
+    </p>
+    <div class="hero-sidebar-ctas">
+      <a href="#" class="btn-sb">View my work →</a>
+      <a href="#" class="btn-sb btn-sb-ghost">About me</a>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="content-section">
+    <div class="cs-label">
+      <span class="cs-label-diamond"></span>
+      <span class="cs-label-line"></span>
+      Selected Work
+    </div>
+
+    <a href="#" class="project-sb">
+      <span class="psb-num">01</span>
+      <div class="psb-content">
+        <h3>AILA <span>↗</span></h3>
+        <p class="psb-desc">AI Learning Assistant designed to tutor students while maintaining academic integrity. Built for scale at SNHU with LangGraph-based agent architectures.</p>
+        <div class="psb-tags">
+          <span class="psb-tag">AI/ML</span>
+          <span class="psb-tag">Education</span>
+          <span class="psb-tag">LangGraph</span>
+          <span class="psb-tag">Azure</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="project-sb">
+      <span class="psb-num">02</span>
+      <div class="psb-content">
+        <h3>QuiverDB <span>↗</span></h3>
+        <p class="psb-desc">"DuckDB for graph retrieval" — fast, embeddable graph database designed for AI workloads. Written in Rust.</p>
+        <div class="psb-tags">
+          <span class="psb-tag">Rust</span>
+          <span class="psb-tag">Graph</span>
+          <span class="psb-tag">Database</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="project-sb">
+      <span class="psb-num">03</span>
+      <div class="psb-content">
+        <h3>Claude Code Projects <span>↗</span></h3>
+        <p class="psb-desc">Tools and utilities exploring the boundaries of AI-assisted development.</p>
+        <div class="psb-tags">
+          <span class="psb-tag">AI</span>
+          <span class="psb-tag">Tooling</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="project-sb">
+      <span class="psb-num">04</span>
+      <div class="psb-content">
+        <h3>Data Viz Experiments <span>↗</span></h3>
+        <p class="psb-desc">Interactive data visualizations and storytelling techniques with D3.js.</p>
+        <div class="psb-tags">
+          <span class="psb-tag">D3.js</span>
+          <span class="psb-tag">TypeScript</span>
+        </div>
+      </div>
+    </a>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="content-section">
+    <div class="cs-label">
+      <span class="cs-label-diamond"></span>
+      <span class="cs-label-line"></span>
+      About
+    </div>
+
+    <div class="about-sb-grid">
+      <div>
+        <p class="about-sb-text">I'm a data scientist and AI engineer focused on building tools that make a meaningful difference. Currently leading GenAI efforts at SNHU, where I design and deploy intelligent systems serving thousands of students.</p>
+        <p class="about-sb-text">My work sits at the intersection of machine learning, software engineering, and education — building production-grade AI that's thoughtful about both capability and responsibility.</p>
+      </div>
+      <div class="about-sb-details">
+        <div class="about-detail-item">
+          <p class="about-detail-label">Focus</p>
+          <p class="about-detail-value">GenAI & ML Systems</p>
+        </div>
+        <div class="about-detail-item">
+          <p class="about-detail-label">Location</p>
+          <p class="about-detail-value">New Hampshire</p>
+        </div>
+        <div class="about-detail-item">
+          <p class="about-detail-label">Languages</p>
+          <p class="about-detail-value">Python, Rust, TypeScript</p>
+        </div>
+        <div class="about-detail-item">
+          <p class="about-detail-label">Tools</p>
+          <p class="about-detail-value">LangGraph, Azure, Databricks</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="content-section">
+    <div class="cs-label">
+      <span class="cs-label-diamond"></span>
+      <span class="cs-label-line"></span>
+      Writing
+    </div>
+
+    <a href="#" class="blog-sb-item">
+      <span class="bsb-date">Jan 2025</span>
+      <div>
+        <h3 class="bsb-title">Building AILA: Lessons from AI Tutoring at Scale</h3>
+        <p class="bsb-excerpt">What I learned building an AI tutor that serves thousands of students while respecting academic integrity.</p>
+      </div>
+    </a>
+
+    <a href="#" class="blog-sb-item">
+      <span class="bsb-date">Jan 2025</span>
+      <div>
+        <h3 class="bsb-title">Graph Retrieval Patterns for AI Applications</h3>
+        <p class="bsb-excerpt">Why graph-based retrieval might be the missing piece in your RAG pipeline.</p>
+      </div>
+    </a>
+
+    <a href="#" class="blog-sb-item">
+      <span class="bsb-date">Dec 2024</span>
+      <div>
+        <h3 class="bsb-title">Taking LangGraph to Production</h3>
+        <p class="bsb-excerpt">Practical lessons from deploying LangGraph agents in production.</p>
+      </div>
+    </a>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="content-section">
+    <div class="cs-label">
+      <span class="cs-label-diamond"></span>
+      <span class="cs-label-line"></span>
+      Contact
+    </div>
+
+    <div class="contact-sb-inner">
+      <div>
+        <h2>Let's build<br>something<br>together.</h2>
+        <p>Open to conversations about AI, graph databases, and thoughtful software.</p>
+      </div>
+      <div class="contact-sb-links">
+        <a href="#" class="csb-link"><span>GitHub</span><span>↗</span></a>
+        <a href="#" class="csb-link"><span>LinkedIn</span><span>↗</span></a>
+        <a href="#" class="csb-link"><span>Email</span><span>↗</span></a>
+        <a href="#" class="csb-link"><span>Schedule a call</span><span>↗</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</div>
+
+</body>
+</html>

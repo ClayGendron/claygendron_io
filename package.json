@@ -1,0 +1,15 @@
+{
+  "name": "clay-io",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend dev\" \"cd backend && uvicorn app.main:app --reload\"",
+    "dev:frontend": "bun run --cwd frontend dev",
+    "dev:backend": "cd backend && uvicorn app.main:app --reload",
+    "build": "bun run --cwd frontend build",
+    "start": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend preview\" \"cd backend && uvicorn app.main:app\"",
+    "mockups": "bun run mockups/server.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
