@@ -22,7 +22,7 @@ export default function ProjectDetail() {
   }
 
   return (
-    <main className="min-h-[80vh] px-6 py-16 md:px-12 md:py-24">
+    <main className="min-h-[80vh] px-(--page-gutter) py-16 md:py-24">
       <article className="mx-auto max-w-3xl">
         {/* Back link */}
         <motion.div

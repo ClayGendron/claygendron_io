@@ -63,7 +63,7 @@ export function Footer() {
         />
       </svg>
 
-      <div className="relative z-[2] mx-auto max-w-[1200px] px-6 pt-24 pb-6 md:px-12">
+      <div className="relative z-[2] px-(--page-gutter) pt-24 pb-6">
         {/* Main footer grid */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
           {/* Left: CTA */}

@@ -18,7 +18,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/92 backdrop-blur-[14px] transition-theme">
-      <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-6 md:px-12">
+      <div className="flex h-14 items-center justify-between px-(--page-gutter)">
         {/* Logo */}
         <Link
           to="/"
@@ -95,7 +95,7 @@ export function Header() {
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <nav className="border-t border-border bg-background md:hidden">
-          <div className="mx-auto flex max-w-[1200px] flex-col gap-1 px-6 py-4">
+          <div className="flex flex-col gap-1 px-(--page-gutter) py-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}

@@ -67,6 +67,15 @@
     /* Kiln grain/vignette */
     --noise-opacity: 0.022;
     --grain-edge-opacity: 0.05;
+
+    /* Page layout */
+    --page-gutter: max(1.5rem, calc((100% - 1200px) / 2));
+}
+
+@media (min-width: 768px) {
+    :root {
+        --page-gutter: max(3rem, calc((100% - 1200px) / 2));
+    }
 }
 
 .dark {

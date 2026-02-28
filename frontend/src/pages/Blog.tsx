@@ -16,8 +16,8 @@ export default function Blog() {
   }, []);
 
   return (
-    <main className="min-h-[80vh] px-6 py-16 md:px-12 md:py-24">
-      <div className="mx-auto max-w-[1200px]">
+    <main className="min-h-[80vh] px-(--page-gutter) py-16 md:py-24">
+      <div>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

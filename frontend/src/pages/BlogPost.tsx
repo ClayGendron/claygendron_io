@@ -36,7 +36,7 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <main className="min-h-[80vh] px-6 py-16 md:px-12 md:py-24">
+      <main className="min-h-[80vh] px-(--page-gutter) py-16 md:py-24">
         <div className="mx-auto max-w-3xl">
           <div className="animate-pulse space-y-4">
             <div className="h-4 w-24 bg-muted" />
@@ -56,7 +56,7 @@ export default function BlogPost() {
   const { frontmatter, content, readingTime } = post;
 
   return (
-    <main className="min-h-[80vh] px-6 py-16 md:px-12 md:py-24">
+    <main className="min-h-[80vh] px-(--page-gutter) py-16 md:py-24">
       <article className="mx-auto max-w-3xl">
         {/* Back link */}
         <motion.div

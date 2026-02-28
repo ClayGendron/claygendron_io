@@ -31,7 +31,7 @@ export function KilnArena() {
       <style>{`
         .hero-frame-kiln {
           position: relative;
-          padding: 3rem max(3rem, calc((100% - 1200px) / 2)) 2.5rem;
+          padding: 3rem var(--page-gutter) 2.5rem;
         }
         .hero-frame-kiln::before,
         .hero-frame-kiln::after {
@@ -51,11 +51,11 @@ export function KilnArena() {
           right: 0;
         }
         .hero-label-kiln {
-          left: max(1.5rem, calc((100% - 1200px) / 2));
+          left: calc(var(--page-gutter) - 0.375rem);
         }
         @media (max-width: 768px) {
-          .hero-frame-kiln { padding: 2rem 1.5rem 1.5rem; }
-          .hero-label-kiln { left: 1rem; }
+          .hero-frame-kiln { padding: 2rem var(--page-gutter) 1.5rem; }
+          .hero-label-kiln { left: calc(var(--page-gutter) - 0.625rem); }
         }
       `}</style>
 
@@ -100,34 +100,36 @@ export function KilnArena() {
             ref={ballRef}
             className="pointer-events-auto absolute z-[2] hidden size-[10px] cursor-grab rounded-full bg-primary transition-shadow duration-200 [&.dragging]:cursor-grabbing"
           />
-          <svg
-            className="pointer-events-none absolute inset-0 z-[1] size-full"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <line
-              ref={aimLineRef}
-              className="stroke-primary"
-              strokeWidth="1.5"
-              strokeDasharray="5 4"
-              style={{ opacity: 0, transition: "opacity 0.12s" }}
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="0"
-            />
-            <line
-              ref={aimDirRef}
-              className="stroke-primary"
-              strokeWidth="1"
-              strokeDasharray="2 3"
-              style={{ opacity: 0, transition: "opacity 0.12s" }}
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="0"
-            />
-          </svg>
         </div>
+
+        {/* Sling lines — outside arena to avoid overflow clipping */}
+        <svg
+          className="pointer-events-none absolute inset-0 z-10 overflow-visible"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            ref={aimLineRef}
+            className="stroke-primary"
+            strokeWidth="1.5"
+            strokeDasharray="5 4"
+            style={{ opacity: 0, transition: "opacity 0.12s" }}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="0"
+          />
+          <line
+            ref={aimDirRef}
+            className="stroke-primary"
+            strokeWidth="1"
+            strokeDasharray="2 3"
+            style={{ opacity: 0, transition: "opacity 0.12s" }}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="0"
+          />
+        </svg>
       </div>
     </>
   );
