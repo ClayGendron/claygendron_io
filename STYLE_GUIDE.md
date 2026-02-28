@@ -463,4 +463,4 @@ To see these principles in action, visit `/demos`:
 
 ---
 
-*Last updated: January 2024*
+*Last updated: January 2026*
