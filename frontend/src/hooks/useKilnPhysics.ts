@@ -575,8 +575,20 @@ export function useKilnPhysics(refs: PhysicsRefs) {
 
       const aimLine = aimLineRef.current;
       const aimDir = aimDirRef.current;
-      if (aimLine) aimLine.style.opacity = "0.35";
-      if (aimDir) aimDir.style.opacity = "0.2";
+      if (aimLine) {
+        aimLine.setAttribute("x1", String(ball.x));
+        aimLine.setAttribute("y1", String(ball.y));
+        aimLine.setAttribute("x2", String(p.x));
+        aimLine.setAttribute("y2", String(p.y));
+        aimLine.style.opacity = "0.35";
+      }
+      if (aimDir) {
+        aimDir.setAttribute("x1", String(ball.x));
+        aimDir.setAttribute("y1", String(ball.y));
+        aimDir.setAttribute("x2", String(ball.x));
+        aimDir.setAttribute("y2", String(ball.y));
+        aimDir.style.opacity = "0.2";
+      }
 
       document.addEventListener("mousemove", onMove);
       document.addEventListener("mouseup", onUp);
