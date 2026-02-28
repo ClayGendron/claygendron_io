@@ -31,15 +31,16 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <p className="max-w-[480px] text-[1.05rem] font-light leading-[1.75] text-muted-foreground">
-                Building AI-powered tools that solve real problems. I care about
-                craft, clarity, and shipping things that work.
+                Data Scientist & AI Engineer with experience across the full AI
+                application stack — from data engineering and enterprise search to
+                agentic systems and front-end development.
               </p>
 
               {/* Currently — inline on mobile, hidden on desktop */}
               <div className="mt-8 md:hidden">
                 <p className="text-[0.9rem] leading-relaxed text-muted-foreground">
                   <strong className="font-medium text-foreground">
-                    Lead GenAI Engineer
+                    Data Scientist
                   </strong>
                   <br />
                   <span className="text-primary">@</span> SNHU
@@ -75,12 +76,55 @@ export default function Home() {
               </p>
               <p className="text-[0.9rem] leading-relaxed text-muted-foreground">
                 <strong className="font-medium text-foreground">
-                  Lead GenAI Engineer
+                  Data Scientist
                 </strong>
                 <br />
                 <span className="text-primary">@</span> SNHU
               </p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* DIVIDER */}
+      <KilnDivider />
+
+      {/* ABOUT */}
+      <section className="px-(--page-gutter) py-14 md:py-20">
+        <SectionHeader label="About" />
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
+          <div>
+            <p className="max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
+              I'm a Data Scientist & AI Engineer at{" "}
+              <strong className="font-medium text-foreground">
+                Southern New Hampshire University
+              </strong>
+              , where I design and build enterprise knowledge tools, AI learning
+              assistants, and agentic systems that serve thousands of students
+              and staff.
+            </p>
+            <p className="mt-6 max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
+              With 5+ years across data science, business intelligence, and
+              applied AI — my work spans the full stack from data engineering
+              and retrieval systems to agentic orchestration and front-end
+              development.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 content-start gap-8">
+            {[
+              { label: "Focus", value: "AI Engineering" },
+              { label: "Location", value: "Manchester, NH" },
+              { label: "Languages", value: "Python, SQL, TS" },
+              { label: "Stack", value: "LangGraph, FastAPI, React" },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p className="mb-[0.3rem] font-mono text-[0.6rem] uppercase tracking-[0.15em] text-muted-foreground">
+                  {stat.label}
+                </p>
+                <p className="font-serif text-[1.1rem] font-normal">{stat.value}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -130,48 +174,6 @@ export default function Home() {
         >
           View all projects <ArrowRight className="size-4" />
         </Link>
-      </section>
-
-      {/* DIVIDER */}
-      <KilnDivider />
-
-      {/* ABOUT */}
-      <section className="px-(--page-gutter) py-14 md:py-20">
-        <SectionHeader label="About" />
-
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
-          <div>
-            <p className="max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
-              I'm an AI engineer focused on building tools that make a
-              meaningful difference. Currently leading GenAI efforts at{" "}
-              <strong className="font-medium text-foreground">
-                Southern New Hampshire University
-              </strong>
-              , where I design and deploy intelligent systems that serve
-              thousands of students.
-            </p>
-            <p className="mt-6 max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
-              My work sits at the intersection of machine learning, software
-              engineering, and education — building production-grade AI that's
-              thoughtful about both capability and responsibility.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 content-start gap-8">
-            {[
-              { label: "Focus", value: "GenAI & ML Systems" },
-              { label: "Location", value: "New Hampshire" },
-              { label: "Languages", value: "Python, Rust, TS" },
-              { label: "Interests", value: "Graphs, Agents, EdTech" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className="mb-[0.3rem] font-mono text-[0.6rem] uppercase tracking-[0.15em] text-muted-foreground">
-                  {stat.label}
-                </p>
-                <p className="font-serif text-[1.1rem] font-normal">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* DIVIDER */}

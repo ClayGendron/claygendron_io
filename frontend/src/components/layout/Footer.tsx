@@ -46,22 +46,6 @@ export function Footer() {
         }}
       />
 
-      {/* Diagonal accent */}
-      <svg
-        className="pointer-events-none absolute inset-0 z-[1]"
-        viewBox="0 0 1440 600"
-        preserveAspectRatio="none"
-      >
-        <line
-          x1="100%"
-          y1="0"
-          x2="65%"
-          y2="100%"
-          stroke="currentColor"
-          strokeWidth="1"
-          className="text-primary opacity-[0.06]"
-        />
-      </svg>
 
       <div className="relative z-[2] px-(--page-gutter) pt-24 pb-6">
         {/* Main footer grid */}
@@ -72,9 +56,9 @@ export function Footer() {
               Get in touch
             </p>
             <h2 className="mb-8 font-serif text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.1] tracking-[-0.02em]">
-              Let's build
+              Let's build something
               <br />
-              something together.
+              <strong className="underline decoration-primary underline-offset-4">together</strong>.
             </h2>
             <a
               href="mailto:clay@claygendron.io"

@@ -1,13 +1,13 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Sun, Moon, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { path: "/projects", label: "Projects" },
   { path: "/about", label: "About" },
+  { path: "/projects", label: "Projects" },
   { path: "/blog", label: "Blog" },
   { path: "/contact", label: "Contact" },
 ];
@@ -15,6 +15,11 @@ const navItems = [
 export function Header() {
   const { resolvedTheme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/92 backdrop-blur-[14px] transition-theme">
@@ -22,9 +27,9 @@ export function Header() {
         {/* Logo */}
         <Link
           to="/"
-          className="font-serif text-lg font-normal tracking-[-0.01em] transition-colors hover:text-primary"
+          className="text-[0.8rem] font-bold tracking-[0.02em] text-muted-foreground transition-colors hover:text-foreground"
         >
-          Clay Gendron
+          CG
         </Link>
 
         {/* Desktop Navigation */}
@@ -81,6 +86,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-muted-foreground"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
@@ -100,7 +106,6 @@ export function Header() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
                     "px-3 py-2 text-sm transition-colors",
