@@ -27,9 +27,9 @@ export function Header() {
         {/* Logo */}
         <Link
           to="/"
-          className="text-[0.8rem] font-bold tracking-[0.02em] text-muted-foreground transition-colors hover:text-foreground"
+          className="font-serif text-[1rem] font-bold tracking-[0.02em] text-muted-foreground transition-colors hover:text-foreground"
         >
-          CG
+          cg
         </Link>
 
         {/* Desktop Navigation */}

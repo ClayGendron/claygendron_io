@@ -16,6 +16,18 @@ export function Layout({ children }: LayoutProps) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // Update page title based on route
+  useEffect(() => {
+    const segment = pathname.split("/")[1];
+    const titles: Record<string, string> = {
+      about: "About",
+      projects: "Projects",
+      blog: "Blog",
+      contact: "Contact",
+    };
+    document.title = titles[segment] ? `Clay — ${titles[segment]}` : "Clay";
+  }, [pathname]);
+
   return (
     <div className="flex min-h-screen flex-col transition-theme">
       <GrainOverlay />
