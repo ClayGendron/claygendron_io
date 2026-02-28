@@ -19,11 +19,11 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section className="flex min-h-screen flex-col justify-center pb-16 pt-24">
+      <section className="flex min-h-screen flex-col pb-20 pt-20 md:justify-center md:pb-24 md:pt-24">
         <KilnArena />
 
         {/* Hero inner content */}
-        <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12">
+        <div className="w-full px-(--page-gutter)">
           <div className="grid grid-cols-1 items-end gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -34,6 +34,18 @@ export default function Home() {
                 Building AI-powered tools that solve real problems. I care about
                 craft, clarity, and shipping things that work.
               </p>
+
+              {/* Currently — inline on mobile, hidden on desktop */}
+              <div className="mt-8 md:hidden">
+                <p className="text-[0.9rem] leading-relaxed text-muted-foreground">
+                  <strong className="font-medium text-foreground">
+                    Lead GenAI Engineer
+                  </strong>
+                  <br />
+                  <span className="text-primary">@</span> SNHU
+                </p>
+              </div>
+
               <div className="mt-10 flex gap-4">
                 <Link
                   to="/projects"
@@ -51,11 +63,12 @@ export default function Home() {
               </div>
             </motion.div>
 
+            {/* Currently — right column on desktop, hidden on mobile */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="pb-2 md:text-right"
+              className="hidden md:block md:text-right"
             >
               <p className="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground">
                 Currently
@@ -76,7 +89,7 @@ export default function Home() {
       <KilnDivider />
 
       {/* SELECTED WORK */}
-      <section className="mx-auto max-w-[1200px] px-6 py-14 md:px-12 md:py-20">
+      <section className="px-(--page-gutter) py-14 md:py-20">
         <SectionHeader label="Selected Work" />
 
         <div>
@@ -123,7 +136,7 @@ export default function Home() {
       <KilnDivider />
 
       {/* ABOUT */}
-      <section className="mx-auto max-w-[1200px] px-6 py-14 md:px-12 md:py-20">
+      <section className="px-(--page-gutter) py-14 md:py-20">
         <SectionHeader label="About" />
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
@@ -165,7 +178,7 @@ export default function Home() {
       <KilnDivider />
 
       {/* WRITING */}
-      <section className="mx-auto max-w-[1200px] px-6 py-14 md:px-12 md:py-20">
+      <section className="px-(--page-gutter) py-14 md:py-20">
         <SectionHeader label="Writing" />
 
         {posts.length > 0 ? (
