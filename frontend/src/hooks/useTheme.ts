@@ -32,6 +32,7 @@ export function useTheme() {
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(resolved);
+    root.style.colorScheme = resolved;
   }, [theme]);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export function useTheme() {
       setResolvedTheme(newResolved);
       document.documentElement.classList.remove("light", "dark");
       document.documentElement.classList.add(newResolved);
+      document.documentElement.style.colorScheme = newResolved;
     };
 
     mediaQuery.addEventListener("change", handleChange);
