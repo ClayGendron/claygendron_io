@@ -1,9 +1,22 @@
+import { useEffect, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { getProject } from "@/content/projects";
 import { SectionHeader } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
+
+interface ProjectData {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  content: string | null;
+  pinned: boolean;
+  tags: string[] | null;
+  tools: string[] | null;
+  impacts: string[] | null;
+  links: Record<string, string> | null;
+}
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -15,10 +28,32 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const project = slug ? getProject(slug) : undefined;
+  const [project, setProject] = useState<ProjectData | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  if (!project) {
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/content/projects/${slug}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Not found");
+        return r.json();
+      })
+      .then(setProject)
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  if (notFound) {
     return <Navigate to="/projects" replace />;
+  }
+
+  if (loading || !project) {
+    return (
+      <main className="min-h-[80vh] flex items-center justify-center">
+        <div className="size-6 animate-spin border-2 border-primary border-t-transparent rounded-full" />
+      </main>
+    );
   }
 
   return (
@@ -46,26 +81,20 @@ export default function ProjectDetail() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-12"
         >
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <div>
-              <SectionHeader label="Project" />
-              <h1 className="font-serif text-4xl font-light tracking-[-0.02em] md:text-5xl">
-                {project.title}
-              </h1>
-            </div>
-            {project.status === "active" && (
-              <span className="mt-8 inline-flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="size-1.5 animate-pulse rounded-full bg-green-500" />
-                Active
-              </span>
-            )}
+          <div className="mb-6">
+            <SectionHeader label="Project" />
+            <h1 className="font-serif text-4xl font-light tracking-[-0.02em] md:text-5xl">
+              {project.title}
+            </h1>
           </div>
-          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-            {project.description}
-          </p>
+          {project.subtitle && (
+            <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
+              {project.subtitle}
+            </p>
+          )}
 
           {/* Links */}
-          {project.links && (
+          {project.links && Object.keys(project.links).length > 0 && (
             <div className="mt-6 flex flex-wrap gap-3">
               {project.links.github && (
                 <a
@@ -93,13 +122,15 @@ export default function ProjectDetail() {
           )}
 
           {/* Tags */}
-          <div className="mt-6 flex flex-wrap gap-1.5">
-            {project.tags.map((tag) => (
-              <Badge key={tag} variant="tag">
-                {tag}
-              </Badge>
-            ))}
-          </div>
+          {project.tags && project.tags.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-1.5">
+              {project.tags.map((tag) => (
+                <Badge key={tag} variant="tag">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
         </motion.header>
 
         {/* Content sections */}
@@ -109,48 +140,48 @@ export default function ProjectDetail() {
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
           className="space-y-10"
         >
-          {/* Overview */}
-          {project.longDescription && (
+          {/* Content / Overview */}
+          {project.content && (
             <section>
               <p className="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
                 Overview
               </p>
               <div className="prose prose-neutral max-w-none dark:prose-invert prose-p:leading-relaxed prose-p:text-muted-foreground">
-                {project.longDescription.split("\n\n").map((paragraph, i) => (
+                {project.content.split("\n\n").map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Highlights */}
-          {project.highlights && project.highlights.length > 0 && (
+          {/* Impacts / Highlights */}
+          {project.impacts && project.impacts.length > 0 && (
             <section>
               <p className="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
                 Highlights
               </p>
               <ul className="space-y-2">
-                {project.highlights.map((highlight, i) => (
+                {project.impacts.map((item, i) => (
                   <li
                     key={i}
                     className="flex items-start gap-3 text-muted-foreground"
                   >
                     <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
-                    <span>{highlight}</span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </section>
           )}
 
-          {/* Tech Stack */}
-          {project.techStack && project.techStack.length > 0 && (
+          {/* Tools / Tech Stack */}
+          {project.tools && project.tools.length > 0 && (
             <section>
               <p className="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
                 Tech Stack
               </p>
               <div className="flex flex-wrap gap-2">
-                {project.techStack.map((tech) => (
+                {project.tools.map((tech) => (
                   <span
                     key={tech}
                     className="border border-border bg-card/50 px-3 py-1.5 text-sm"

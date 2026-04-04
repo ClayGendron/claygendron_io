@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     # Admin settings (for analytics dashboard)
     admin_secret: str = ""
 
+    # Microsoft Entra ID (Azure AD)
+    azure_tenant_id: str = ""
+    azure_client_id: str = ""
+    admin_allowed_emails: str = ""
+
     # Database (for analytics - Phase 6)
     database_url: str = ""
 

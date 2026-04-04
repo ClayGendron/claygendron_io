@@ -7,7 +7,7 @@ from pathlib import Path
 
 from app.config import get_settings
 from app.database import init_db, close_db
-from app.routes import contact, analytics, admin
+from app.routes import contact, analytics, admin, content, admin_content
 
 settings = get_settings()
 
@@ -43,6 +43,8 @@ app.add_middleware(
 app.include_router(contact.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
 app.include_router(admin.router, prefix="/api/admin")
+app.include_router(content.router, prefix="/api/content")
+app.include_router(admin_content.router, prefix="/api/admin/content")
 
 
 # Health check endpoint

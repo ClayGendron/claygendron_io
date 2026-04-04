@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlmodel import SQLModel
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -8,11 +8,6 @@ from app.config import get_settings
 settings = get_settings()
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-# Create async engine
 def get_database_url() -> str:
     """Convert standard postgres URL to async format."""
     url = settings.database_url
@@ -47,7 +42,7 @@ async def init_db():
     # Create tables
     async with engine.begin() as conn:
         from app import models  # noqa: F401
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(SQLModel.metadata.create_all)
 
 
 async def close_db():

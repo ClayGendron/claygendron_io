@@ -1,13 +1,31 @@
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import { getAllProjects, getFeaturedProjects } from "@/content/projects";
 import { SectionHeader, KilnDivider } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 
+interface ProjectItem {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  pinned: boolean;
+  tags: string[] | null;
+}
+
 export default function Projects() {
-  const featuredProjects = getFeaturedProjects();
-  const otherProjects = getAllProjects().filter((p) => !p.featured);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+
+  useEffect(() => {
+    fetch("/api/content/projects")
+      .then((r) => r.json())
+      .then(setProjects)
+      .catch(() => {});
+  }, []);
+
+  const featured = projects.filter((p) => p.pinned);
+  const other = projects.filter((p) => !p.pinned);
 
   return (
     <main className="min-h-[80vh] px-(--page-gutter) py-16 md:py-24">
@@ -30,7 +48,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Featured Projects */}
-        {featuredProjects.length > 0 && (
+        {featured.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -38,7 +56,7 @@ export default function Projects() {
             className="mb-16"
           >
             <div>
-              {featuredProjects.map((project, index) => (
+              {featured.map((project, index) => (
                 <motion.div
                   key={project.slug}
                   initial={{ opacity: 0, y: 20 }}
@@ -61,7 +79,7 @@ export default function Projects() {
                         {project.title}
                       </div>
                       <div className="mt-1.5 flex gap-2">
-                        {project.tags.slice(0, 3).map((tag) => (
+                        {project.tags?.slice(0, 3).map((tag) => (
                           <Badge key={tag} variant="tag">
                             {tag}
                           </Badge>
@@ -69,7 +87,7 @@ export default function Projects() {
                       </div>
                     </div>
                     <span className="hidden text-[0.88rem] leading-relaxed text-muted-foreground md:block">
-                      {project.description}
+                      {project.subtitle}
                     </span>
                     <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
                       <ArrowUpRight className="size-5" />
@@ -82,14 +100,14 @@ export default function Projects() {
         )}
 
         {/* Divider */}
-        {otherProjects.length > 0 && (
+        {other.length > 0 && (
           <div className="my-12">
             <KilnDivider />
           </div>
         )}
 
         {/* Other Projects */}
-        {otherProjects.length > 0 && (
+        {other.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -97,7 +115,7 @@ export default function Projects() {
           >
             <SectionHeader label="More Projects" />
             <div>
-              {otherProjects.map((project, index) => (
+              {other.map((project, index) => (
                 <motion.div
                   key={project.slug}
                   initial={{ opacity: 0, y: 20 }}
@@ -113,17 +131,14 @@ export default function Projects() {
                     className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-5 text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
                   >
                     <span className="font-mono text-[0.7rem] text-muted-foreground">
-                      {String(featuredProjects.length + index + 1).padStart(
-                        2,
-                        "0"
-                      )}
+                      {String(featured.length + index + 1).padStart(2, "0")}
                     </span>
                     <div>
                       <div className="font-serif text-lg font-normal transition-colors group-hover:text-primary">
                         {project.title}
                       </div>
                       <div className="mt-1 flex gap-2">
-                        {project.tags.slice(0, 3).map((tag) => (
+                        {project.tags?.slice(0, 3).map((tag) => (
                           <Badge key={tag} variant="tag">
                             {tag}
                           </Badge>
@@ -131,7 +146,7 @@ export default function Projects() {
                       </div>
                     </div>
                     <span className="hidden text-sm text-muted-foreground md:block">
-                      {project.description}
+                      {project.subtitle}
                     </span>
                     <span className="hidden text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
                       <ArrowUpRight className="size-4" />

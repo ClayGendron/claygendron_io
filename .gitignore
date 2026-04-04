@@ -33,5 +33,8 @@ npm-debug.log*
 htmlcov/
 .pytest_cache/
 
+# Claude
+.claude/
+
 # Misc
 *.bak

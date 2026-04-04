@@ -8,22 +8,12 @@ Usage (from repo root):
 Outputs: ../frontend/public/favicon.png (32x32, transparent background)
 """
 
-import io
-import os
+import re
 import sys
 from pathlib import Path
-
-try:
-    from PIL import Image, ImageDraw, ImageFont
-except ImportError:
-    print("Pillow is required: pip install Pillow")
-    sys.exit(1)
-
-try:
-    import requests
-except ImportError:
-    print("requests is required: pip install requests")
-    sys.exit(1)
+import requests
+from PIL import Image, ImageDraw, ImageFont
+import requests
 
 BACKEND_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = BACKEND_ROOT.parent
@@ -38,8 +28,6 @@ def get_font(size: int) -> ImageFont.FreeTypeFont:
     """Load Newsreader font, downloading if needed."""
     if FONT_CACHE.exists():
         return ImageFont.truetype(str(FONT_CACHE), size)
-
-    import re
 
     print("Downloading Newsreader font from Google Fonts...")
 
@@ -103,8 +91,8 @@ def generate_favicon(debug=False):
     # Center using actual pixel bounds (not font metrics)
     pw = pixel_bbox[2] - pixel_bbox[0]
     ph = pixel_bbox[3] - pixel_bbox[1]
-    x = (render_size - pw) / 2 - pixel_bbox[0] - render_size * 0.01
-    y = (render_size - ph) / 2 - pixel_bbox[1] + render_size * 0.03
+    x = (render_size - pw) / 2 - pixel_bbox[0] - render_size * 0.015
+    y = (render_size - ph) / 2 - pixel_bbox[1] + render_size * 0.04
 
     draw.text((x, y), "cg", fill=text_color, font=font)
 

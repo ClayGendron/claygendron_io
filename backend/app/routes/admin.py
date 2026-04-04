@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timedelta
@@ -7,22 +6,12 @@ from uuid import UUID
 
 from sqlalchemy import select, func, desc, Integer, case
 from sqlalchemy.orm import selectinload
-from app.database import get_db, async_session_maker
+from app.database import get_db
+from app import database
 from app.models import Session, PageView, Event
-from app.config import get_settings
+from app.auth import verify_admin
 
 router = APIRouter(tags=["admin"])
-settings = get_settings()
-security = HTTPBearer()
-
-
-async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verify admin authentication."""
-    if not settings.admin_secret:
-        raise HTTPException(status_code=503, detail="Admin not configured")
-    if credentials.credentials != settings.admin_secret:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    return True
 
 
 class OverviewStats(BaseModel):
@@ -67,7 +56,7 @@ async def get_overview(
     _: bool = Depends(verify_admin),
 ):
     """Get analytics overview."""
-    if not async_session_maker:
+    if not database.async_session_maker:
         raise HTTPException(status_code=503, detail="Database not configured")
 
     start_date = datetime.utcnow() - timedelta(days=days)
@@ -170,7 +159,7 @@ async def list_sessions(
     _: bool = Depends(verify_admin),
 ):
     """List recent sessions."""
-    if not async_session_maker:
+    if not database.async_session_maker:
         raise HTTPException(status_code=503, detail="Database not configured")
 
     offset = (page - 1) * limit
@@ -226,7 +215,7 @@ async def get_session(
     _: bool = Depends(verify_admin),
 ):
     """Get session details with page views."""
-    if not async_session_maker:
+    if not database.async_session_maker:
         raise HTTPException(status_code=503, detail="Database not configured")
 
     try:
@@ -287,7 +276,7 @@ async def get_pageviews_by_path(
     _: bool = Depends(verify_admin),
 ):
     """Get page views grouped by path."""
-    if not async_session_maker:
+    if not database.async_session_maker:
         raise HTTPException(status_code=503, detail="Database not configured")
 
     start_date = datetime.utcnow() - timedelta(days=days)
@@ -327,7 +316,7 @@ async def get_daily_stats(
     _: bool = Depends(verify_admin),
 ):
     """Get daily visitor and page view counts."""
-    if not async_session_maker:
+    if not database.async_session_maker:
         raise HTTPException(status_code=503, detail="Database not configured")
 
     start_date = datetime.utcnow() - timedelta(days=days)

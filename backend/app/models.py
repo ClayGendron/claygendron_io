@@ -1,47 +1,65 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, JSON, Boolean, Index
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+import math
 import uuid
+from datetime import datetime
+from typing import Optional
 
-from app.database import Base
+from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Column, Index, ForeignKey, JSON, String, Text
+from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSONB
 
 
-class Session(Base):
-    """Visitor session - one per browser session."""
+def calculate_reading_minutes(content: str) -> int:
+    """Calculate estimated reading time from content word count."""
+    return max(1, math.ceil(len(content.split()) / 200))
 
+
+# ---------------------------------------------------------------------------
+# Analytics Models
+# ---------------------------------------------------------------------------
+
+
+class Session(SQLModel, table=True):
     __tablename__ = "sessions"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    started_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    last_seen_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(UUID(as_uuid=True), primary_key=True),
+    )
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    last_seen_at: datetime = Field(default_factory=datetime.utcnow)
 
     # Device info
-    user_agent = Column(String(500))
-    device_type = Column(String(20))  # mobile, tablet, desktop
-    browser = Column(String(50))
-    browser_version = Column(String(20))
-    os = Column(String(50))
-    os_version = Column(String(20))
+    user_agent: Optional[str] = Field(default=None, max_length=500)
+    device_type: Optional[str] = Field(default=None, max_length=20)
+    browser: Optional[str] = Field(default=None, max_length=50)
+    browser_version: Optional[str] = Field(default=None, max_length=20)
+    os: Optional[str] = Field(default=None, max_length=50)
+    os_version: Optional[str] = Field(default=None, max_length=20)
 
-    # Location (optional, from IP)
-    country = Column(String(2))  # ISO country code
-    city = Column(String(100))
+    # Location
+    country: Optional[str] = Field(default=None, max_length=2)
+    city: Optional[str] = Field(default=None, max_length=100)
 
     # Source
-    referrer = Column(String(500))
-    referrer_domain = Column(String(100))
-    utm_source = Column(String(100))
-    utm_medium = Column(String(100))
-    utm_campaign = Column(String(100))
+    referrer: Optional[str] = Field(default=None, max_length=500)
+    referrer_domain: Optional[str] = Field(default=None, max_length=100)
+    utm_source: Optional[str] = Field(default=None, max_length=100)
+    utm_medium: Optional[str] = Field(default=None, max_length=100)
+    utm_campaign: Optional[str] = Field(default=None, max_length=100)
 
     # Viewport
-    screen_width = Column(Integer)
-    screen_height = Column(Integer)
+    screen_width: Optional[int] = None
+    screen_height: Optional[int] = None
 
     # Relationships
-    page_views = relationship("PageView", back_populates="session", cascade="all, delete-orphan")
-    events = relationship("Event", back_populates="session", cascade="all, delete-orphan")
+    page_views: list["PageView"] = Relationship(
+        back_populates="session",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    events: list["Event"] = Relationship(
+        back_populates="session",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
     __table_args__ = (
         Index("ix_sessions_started_at", "started_at"),
@@ -49,30 +67,36 @@ class Session(Base):
     )
 
 
-class PageView(Base):
-    """Individual page visit."""
-
+class PageView(SQLModel, table=True):
     __tablename__ = "page_views"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(UUID(as_uuid=True), primary_key=True),
+    )
+    session_id: uuid.UUID = Field(
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False),
+    )
 
     # Page info
-    path = Column(String(500), nullable=False)
-    title = Column(String(200))
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    path: str = Field(max_length=500)
+    title: Optional[str] = Field(default=None, max_length=200)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    # Engagement metrics (updated via events)
-    time_on_page = Column(Integer, default=0)  # seconds
-    scroll_depth = Column(Integer, default=0)  # percentage 0-100
-    is_bounce = Column(Boolean, default=True)
+    # Engagement metrics
+    time_on_page: int = Field(default=0)
+    scroll_depth: int = Field(default=0)
+    is_bounce: bool = Field(default=True)
 
-    # Referrer for this specific page view
-    referrer = Column(String(500))
+    # Referrer
+    referrer: Optional[str] = Field(default=None, max_length=500)
 
-    # Relationship
-    session = relationship("Session", back_populates="page_views")
-    events = relationship("Event", back_populates="page_view", cascade="all, delete-orphan")
+    # Relationships
+    session: Optional[Session] = Relationship(back_populates="page_views")
+    events: list["Event"] = Relationship(
+        back_populates="page_view",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
     __table_args__ = (
         Index("ix_page_views_session_id", "session_id"),
@@ -81,28 +105,118 @@ class PageView(Base):
     )
 
 
-class Event(Base):
-    """Custom interaction events."""
-
+class Event(SQLModel, table=True):
     __tablename__ = "events"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
-    page_view_id = Column(UUID(as_uuid=True), ForeignKey("page_views.id"), nullable=True)
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4,
+        sa_column=Column(UUID(as_uuid=True), primary_key=True),
+    )
+    session_id: uuid.UUID = Field(
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False),
+    )
+    page_view_id: Optional[uuid.UUID] = Field(
+        default=None,
+        sa_column=Column(UUID(as_uuid=True), ForeignKey("page_views.id"), nullable=True),
+    )
 
     # Event info
-    event_type = Column(String(50), nullable=False)  # scroll, click, visibility, etc.
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    event_type: str = Field(max_length=50)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     # Event data (flexible JSON)
-    data = Column(JSON, default=dict)
+    data: Optional[dict] = Field(default_factory=dict, sa_column=Column(JSON, default=dict))
 
     # Relationships
-    session = relationship("Session", back_populates="events")
-    page_view = relationship("PageView", back_populates="events")
+    session: Optional[Session] = Relationship(back_populates="events")
+    page_view: Optional[PageView] = Relationship(back_populates="events")
 
     __table_args__ = (
         Index("ix_events_session_id", "session_id"),
         Index("ix_events_event_type", "event_type"),
         Index("ix_events_timestamp", "timestamp"),
     )
+
+
+# ---------------------------------------------------------------------------
+# Content Models
+# ---------------------------------------------------------------------------
+
+
+class Project(SQLModel, table=True):
+    __tablename__ = "projects"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    slug: str = Field(sa_column=Column(String(200), unique=True, index=True, nullable=False))
+    title: str = Field(max_length=200)
+    subtitle: Optional[str] = Field(default=None, max_length=500)
+    content: Optional[str] = Field(default=None, sa_column=Column(Text))
+    date: Optional[datetime] = None
+    pinned: bool = Field(default=False)
+    published: bool = Field(default=False)
+    order: int = Field(default=0)
+    impacts: Optional[list[str]] = Field(default=None, sa_column=Column(ARRAY(String)))
+    tags: Optional[list[str]] = Field(default=None, sa_column=Column(ARRAY(String)))
+    tools: Optional[list[str]] = Field(default=None, sa_column=Column(ARRAY(String)))
+    links: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    __table_args__ = (
+        Index("ix_projects_published_order", "published", "order"),
+    )
+
+
+class BlogPost(SQLModel, table=True):
+    __tablename__ = "blog_posts"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    slug: str = Field(sa_column=Column(String(200), unique=True, index=True, nullable=False))
+    title: str = Field(max_length=200)
+    subtitle: Optional[str] = Field(default=None, max_length=500)
+    content: Optional[str] = Field(default=None, sa_column=Column(Text))
+    date: datetime = Field(default_factory=datetime.utcnow)
+    reading_minutes: int = Field(default=1)
+    published: bool = Field(default=False)
+    tags: Optional[list[str]] = Field(default=None, sa_column=Column(ARRAY(String)))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    __table_args__ = (
+        Index("ix_blog_posts_published_date", "published", "date"),
+    )
+
+
+class About(SQLModel, table=True):
+    __tablename__ = "about"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: Optional[str] = Field(default=None, max_length=200)
+    introduction: Optional[str] = Field(default=None, sa_column=Column(Text))
+    focus: Optional[str] = Field(default=None, max_length=200)
+    interests: Optional[str] = Field(default=None, max_length=200)
+    languages: Optional[str] = Field(default=None, max_length=200)
+    location: Optional[str] = Field(default=None, max_length=200)
+    current_title: Optional[str] = Field(default=None, max_length=200)
+    current_employer: Optional[str] = Field(default=None, max_length=200)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    work_areas: list["AboutWorkArea"] = Relationship(
+        back_populates="about",
+        sa_relationship_kwargs={
+            "cascade": "all, delete-orphan",
+            "order_by": "AboutWorkArea.order",
+        },
+    )
+
+
+class AboutWorkArea(SQLModel, table=True):
+    __tablename__ = "about_work_areas"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    about_id: int = Field(foreign_key="about.id")
+    title: str = Field(max_length=200)
+    description: Optional[str] = Field(default=None, sa_column=Column(Text))
+    order: int = Field(default=0)
+
+    about: Optional[About] = Relationship(back_populates="work_areas")
