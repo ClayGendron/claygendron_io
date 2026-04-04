@@ -24,23 +24,27 @@ export default function Home() {
 
         {/* Hero inner content */}
         <div className="w-full px-(--page-gutter)">
-          <div className="grid grid-cols-1 items-end gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
+          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <p className="max-w-[480px] text-[1.05rem] font-light leading-[1.75] text-muted-foreground">
-                Data Scientist & AI Engineer with experience across the full AI
-                application stack — from data engineering and enterprise search to
-                agentic systems and front-end development.
+                AI Engineer with experience building and deploying full-stack
+                agentic applications. Focused on building the infrastructure
+                and platforms that enable enterprises to use AI reliably in
+                high-impact solutions.
               </p>
 
               {/* Currently — inline on mobile, hidden on desktop */}
               <div className="mt-8 md:hidden">
+                <p className="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground">
+                  Currently
+                </p>
                 <p className="text-[0.9rem] leading-relaxed text-muted-foreground">
                   <strong className="font-medium text-foreground">
-                    Data Scientist
+                    Data Scientist - GenAI
                   </strong>
                   <br />
                   <span className="text-primary">@</span> SNHU
@@ -76,55 +80,12 @@ export default function Home() {
               </p>
               <p className="text-[0.9rem] leading-relaxed text-muted-foreground">
                 <strong className="font-medium text-foreground">
-                  Data Scientist
+                  Data Scientist - GenAI
                 </strong>
                 <br />
                 <span className="text-primary">@</span> SNHU
               </p>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* DIVIDER */}
-      <KilnDivider />
-
-      {/* ABOUT */}
-      <section className="px-(--page-gutter) py-14 md:py-20">
-        <SectionHeader label="About" />
-
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-[7fr_5fr] md:gap-16">
-          <div>
-            <p className="max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
-              I'm a Data Scientist & AI Engineer at{" "}
-              <strong className="font-medium text-foreground">
-                Southern New Hampshire University
-              </strong>
-              , where I design and build enterprise knowledge tools, AI learning
-              assistants, and agentic systems that serve thousands of students
-              and staff.
-            </p>
-            <p className="mt-6 max-w-[520px] text-[1.05rem] leading-[1.8] text-muted-foreground">
-              With 5+ years across data science, business intelligence, and
-              applied AI — my work spans the full stack from data engineering
-              and retrieval systems to agentic orchestration and front-end
-              development.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 content-start gap-8">
-            {[
-              { label: "Focus", value: "AI Engineering" },
-              { label: "Location", value: "Manchester, NH" },
-              { label: "Languages", value: "Python, SQL, TS" },
-              { label: "Stack", value: "LangGraph, FastAPI, React" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className="mb-[0.3rem] font-mono text-[0.6rem] uppercase tracking-[0.15em] text-muted-foreground">
-                  {stat.label}
-                </p>
-                <p className="font-serif text-[1.1rem] font-normal">{stat.value}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
