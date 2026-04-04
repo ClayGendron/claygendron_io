@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import { SectionHeader, KilnDivider } from "@/components/shared";
+import { KilnDivider } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 
 interface ProjectItem {
@@ -37,7 +37,6 @@ export default function Projects() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-16"
         >
-          <SectionHeader label="Work" />
           <h1 className="font-serif text-4xl font-light leading-[1.1] tracking-[-0.02em] md:text-5xl lg:text-6xl">
             Projects
           </h1>
@@ -113,7 +112,6 @@ export default function Projects() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.35 }}
           >
-            <SectionHeader label="More Projects" />
             <div>
               {other.map((project, index) => (
                 <motion.div

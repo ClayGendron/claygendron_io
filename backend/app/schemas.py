@@ -8,6 +8,13 @@ from sqlmodel import SQLModel, Field
 SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
+def _strip_tz(v: datetime | None) -> datetime | None:
+    """Strip timezone info so naive datetimes match TIMESTAMP WITHOUT TIME ZONE columns."""
+    if v is not None and v.tzinfo is not None:
+        return v.replace(tzinfo=None)
+    return v
+
+
 def _validate_slug(v: str) -> str:
     if not SLUG_PATTERN.match(v):
         raise ValueError("Slug must be lowercase alphanumeric with hyphens")
@@ -34,6 +41,7 @@ class ProjectCreate(SQLModel):
     links: Optional[dict] = None
 
     _slug = field_validator("slug")(_validate_slug)
+    _date = field_validator("date")(_strip_tz)
 
 
 class ProjectUpdate(SQLModel):
@@ -56,6 +64,8 @@ class ProjectUpdate(SQLModel):
         if v is not None:
             return _validate_slug(v)
         return v
+
+    _date = field_validator("date")(_strip_tz)
 
 
 class ProjectListItem(SQLModel):
@@ -94,6 +104,7 @@ class BlogPostCreate(SQLModel):
     tags: Optional[list[str]] = None
 
     _slug = field_validator("slug")(_validate_slug)
+    _date = field_validator("date")(_strip_tz)
 
 
 class BlogPostUpdate(SQLModel):
@@ -111,6 +122,8 @@ class BlogPostUpdate(SQLModel):
         if v is not None:
             return _validate_slug(v)
         return v
+
+    _date = field_validator("date")(_strip_tz)
 
 
 class BlogPostListItem(SQLModel):

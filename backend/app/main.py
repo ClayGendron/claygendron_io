@@ -7,6 +7,7 @@ from pathlib import Path
 
 from app.config import get_settings
 from app.database import init_db, close_db
+from app.auth import router as auth_router
 from app.routes import contact, analytics, admin, content, admin_content
 
 settings = get_settings()
@@ -33,13 +34,14 @@ app = FastAPI(
 # CORS middleware for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["http://localhost:8000", "http://localhost:8001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Include API routes
+app.include_router(auth_router, prefix="/api")
 app.include_router(contact.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
 app.include_router(admin.router, prefix="/api/admin")

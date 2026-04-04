@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CalendlyEmbed, SectionHeader } from "@/components/shared";
+import { CalendlyEmbed } from "@/components/shared";
 
 // Set this to your Calendly URL to enable the embed
 const CALENDLY_URL = ""; // e.g., "https://calendly.com/claygendron/30min"
@@ -75,7 +75,6 @@ export default function Contact() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-16"
         >
-          <SectionHeader label="Get in Touch" />
           <h1 className="font-serif text-4xl font-light leading-[1.1] tracking-[-0.02em] md:text-5xl lg:text-6xl">
             Contact
           </h1>

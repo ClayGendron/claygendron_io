@@ -1,6 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { MsalProvider } from "@azure/msal-react";
-import { msalInstance } from "./auth/msalConfig";
 import { AuthGuard } from "./auth/AuthGuard";
 import { AdminLayout } from "./components/AdminLayout";
 import Dashboard from "./pages/Dashboard";
@@ -13,23 +11,21 @@ import Analytics from "./pages/analytics/Analytics";
 
 export default function AdminRoot() {
   return (
-    <MsalProvider instance={msalInstance}>
-      <AuthGuard>
-        <Routes>
-          <Route element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="projects" element={<ProjectsList />} />
-            <Route path="projects/new" element={<ProjectForm />} />
-            <Route path="projects/:id" element={<ProjectForm />} />
-            <Route path="posts" element={<PostsList />} />
-            <Route path="posts/new" element={<PostForm />} />
-            <Route path="posts/:id" element={<PostForm />} />
-            <Route path="about" element={<AboutEditor />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="callback" element={<Navigate to="/admin" replace />} />
-          </Route>
-        </Routes>
-      </AuthGuard>
-    </MsalProvider>
+    <AuthGuard>
+      <Routes>
+        <Route element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="projects" element={<ProjectsList />} />
+          <Route path="projects/new" element={<ProjectForm />} />
+          <Route path="projects/:id" element={<ProjectForm />} />
+          <Route path="posts" element={<PostsList />} />
+          <Route path="posts/new" element={<PostForm />} />
+          <Route path="posts/:id" element={<PostForm />} />
+          <Route path="about" element={<AboutEditor />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
+        </Route>
+      </Routes>
+    </AuthGuard>
   );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { SectionHeader } from "@/components/shared";
+
 import { Badge } from "@/components/ui/badge";
 
 interface ProjectData {
@@ -82,7 +82,6 @@ export default function ProjectDetail() {
           className="mb-12"
         >
           <div className="mb-6">
-            <SectionHeader label="Project" />
             <h1 className="font-serif text-4xl font-light tracking-[-0.02em] md:text-5xl">
               {project.title}
             </h1>

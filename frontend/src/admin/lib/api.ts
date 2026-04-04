@@ -1,4 +1,3 @@
-import { msalInstance, loginRequest } from "@/admin/auth/msalConfig";
 import type {
   Project,
   ProjectCreate,
@@ -27,38 +26,23 @@ class ApiError extends Error {
   }
 }
 
-async function getToken(): Promise<string> {
-  const accounts = msalInstance.getAllAccounts();
-  if (accounts.length === 0) {
-    await msalInstance.loginRedirect(loginRequest);
-    throw new Error("Redirecting to login");
-  }
-
-  try {
-    const response = await msalInstance.acquireTokenSilent({
-      ...loginRequest,
-      account: accounts[0],
-    });
-    return response.accessToken;
-  } catch {
-    await msalInstance.loginRedirect(loginRequest);
-    throw new Error("Redirecting to login");
-  }
-}
-
 async function adminFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = await getToken();
   const res = await fetch(`/api/admin${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   });
+
+  if (res.status === 401) {
+    window.location.href = "/api/auth/login";
+    throw new ApiError(401, "Not authenticated");
+  }
 
   if (!res.ok) {
     const body = await res.text();
@@ -174,5 +158,19 @@ export const analyticsApi = {
   sessions: (limit = 10) =>
     adminFetch<{ sessions: SessionItem[] }>(`/sessions?limit=${limit}`),
 };
+
+// ---------------------------------------------------------------------------
+// Auth helper
+// ---------------------------------------------------------------------------
+
+export async function fetchCurrentUser(): Promise<{ email: string; name: string } | null> {
+  try {
+    const res = await fetch("/api/auth/me", { credentials: "include" });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
 
 export { ApiError };

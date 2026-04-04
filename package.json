@@ -2,11 +2,11 @@
   "name": "clay-io",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend dev\" \"cd backend && .venv/bin/uvicorn app.main:app --reload\"",
+    "dev": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend dev\" \"cd backend && .venv/bin/uvicorn app.main:app --reload --port 8001\"",
     "dev:frontend": "bun run --cwd frontend dev",
-    "dev:backend": "cd backend && .venv/bin/uvicorn app.main:app --reload",
+    "dev:backend": "cd backend && .venv/bin/uvicorn app.main:app --reload --port 8001",
     "build": "bun run --cwd frontend build",
-    "start": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend preview\" \"cd backend && .venv/bin/uvicorn app.main:app\""
+    "start": "cd backend && .venv/bin/uvicorn app.main:app --port 8000"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

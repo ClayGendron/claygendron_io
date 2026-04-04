@@ -1,14 +1,10 @@
-import { useMsal } from "@azure/msal-react";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { loginRequest } from "./msalConfig";
 
 export function LoginPage() {
-  const { instance } = useMsal();
-
   const handleLogin = () => {
-    instance.loginRedirect(loginRequest);
+    window.location.href = "/api/auth/login";
   };
 
   return (

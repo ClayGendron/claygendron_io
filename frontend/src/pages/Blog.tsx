@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { fetchPostIndex, formatDate, type PostMeta } from "@/lib/markdown";
-import { SectionHeader } from "@/components/shared";
 
 export default function Blog() {
   const [posts, setPosts] = useState<PostMeta[]>([]);
@@ -25,7 +24,6 @@ export default function Blog() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-16"
         >
-          <SectionHeader label="Writing" />
           <h1 className="font-serif text-4xl font-light leading-[1.1] tracking-[-0.02em] md:text-5xl lg:text-6xl">
             Blog
           </h1>

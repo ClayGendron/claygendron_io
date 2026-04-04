@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useMsal } from "@azure/msal-react";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -43,11 +42,11 @@ const navSections: { label?: string; items: NavItem[] }[] = [
 ];
 
 export function AdminSidebar() {
-  const { instance } = useMsal();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = () => {
-    instance.logoutRedirect({ postLogoutRedirectUri: "/" });
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    window.location.href = "/";
   };
 
   const nav = (
