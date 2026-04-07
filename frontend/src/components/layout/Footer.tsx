@@ -29,7 +29,7 @@ function LinkedInIcon({ className }: { className?: string }) {
 const socialLinks = [
   { href: "https://github.com/claygendron", icon: GitHubIcon, label: "GitHub" },
   { href: "https://linkedin.com/in/claygendron", icon: LinkedInIcon, label: "LinkedIn" },
-  { href: "mailto:clay@claygendron.io", icon: Mail, label: "Email" },
+  { href: "mailto:chg@claygendron.io", icon: Mail, label: "Email" },
 ];
 
 export function Footer() {
@@ -61,7 +61,7 @@ export function Footer() {
               <strong className="underline decoration-primary underline-offset-4">together</strong>.
             </h2>
             <a
-              href="mailto:clay@claygendron.io"
+              href="mailto:chg@claygendron.io"
               className="inline-flex items-center gap-2 border border-white/25 px-6 py-3 text-[0.82rem] font-normal text-white transition-all duration-250 hover:border-primary hover:text-primary"
             >
               Contact me &nbsp;&rarr;

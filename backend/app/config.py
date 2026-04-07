@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     # Resend settings
     resend_api_key: str = ""
     contact_email: str = "chg@claygendron.io"
-    from_email: str = "contact@claygendron.io"
+    from_email: str = "chg@claygendron.io"
 
     # Microsoft Entra ID (Azure AD)
     azure_tenant_id: str = ""
