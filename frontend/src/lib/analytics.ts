@@ -4,6 +4,7 @@
  */
 
 const API_BASE = '/api/analytics';
+const IS_LOCAL = window.location.hostname === 'localhost';
 
 interface AnalyticsState {
   sessionId: string | null;
@@ -62,6 +63,7 @@ function extendSession(): void {
  * Start a new analytics session
  */
 async function startSession(): Promise<string | null> {
+  if (IS_LOCAL) return null;
   // Check for existing valid session
   const existingSession = localStorage.getItem(SESSION_KEY);
   if (existingSession && isSessionValid()) {
@@ -128,6 +130,7 @@ function handleScroll(): void {
  * Track a page view
  */
 async function trackPageView(path: string, title?: string): Promise<string | null> {
+  if (IS_LOCAL) return null;
   if (!state.sessionId) {
     await startSession();
   }
@@ -235,7 +238,7 @@ async function trackEvent(
   eventType: string,
   data?: Record<string, unknown>
 ): Promise<void> {
-  if (!state.sessionId) {
+  if (IS_LOCAL || !state.sessionId) {
     return;
   }
 
@@ -333,6 +336,7 @@ function sendPageViewUpdateBeacon(): void {
  * Initialize analytics
  */
 async function init(): Promise<void> {
+  if (IS_LOCAL) return;
   await startSession();
   setupVisibilityHandler();
 }

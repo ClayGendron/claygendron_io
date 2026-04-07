@@ -7,7 +7,7 @@ from user_agents import parse as parse_user_agent
 from urllib.parse import urlparse
 
 from sqlalchemy import select, update
-from app.database import get_db, async_session_maker
+from app.database import get_db
 from app.models import Session, PageView, Event
 from app.config import get_settings
 
@@ -86,7 +86,7 @@ def parse_ua(user_agent: str) -> dict:
 @router.post("/analytics/session", response_model=SessionStartResponse)
 async def start_session(request: Request, body: SessionStartRequest):
     """Start a new analytics session."""
-    if not settings.database_url or not async_session_maker:
+    if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
 
     user_agent = request.headers.get("user-agent", "")
@@ -117,7 +117,7 @@ async def start_session(request: Request, body: SessionStartRequest):
 @router.post("/analytics/pageview", response_model=PageViewResponse)
 async def track_page_view(body: PageViewRequest):
     """Track a page view."""
-    if not settings.database_url or not async_session_maker:
+    if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
 
     try:
@@ -163,7 +163,7 @@ async def track_page_view(body: PageViewRequest):
 @router.patch("/analytics/pageview/{page_view_id}")
 async def update_page_view(page_view_id: str, body: UpdatePageViewRequest):
     """Update page view metrics (time on page, scroll depth)."""
-    if not settings.database_url or not async_session_maker:
+    if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
 
     try:
@@ -191,7 +191,7 @@ async def update_page_view(page_view_id: str, body: UpdatePageViewRequest):
 @router.post("/analytics/event")
 async def track_event(body: EventRequest):
     """Track a custom event."""
-    if not settings.database_url or not async_session_maker:
+    if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
 
     try:
@@ -222,7 +222,7 @@ async def track_event(body: EventRequest):
 @router.post("/analytics/heartbeat")
 async def heartbeat(session_id: str):
     """Keep session alive and update last_seen."""
-    if not settings.database_url or not async_session_maker:
+    if not settings.database_url:
         return {"success": True}  # Silently succeed if not configured
 
     try:
