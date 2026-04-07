@@ -3,16 +3,27 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { KilnArena, KilnDivider, SectionHeader } from "@/components/shared";
-import { getAllProjects } from "@/content/projects";
 import { fetchPostIndex, formatDate, type PostMeta } from "@/lib/markdown";
 import { Badge } from "@/components/ui/badge";
 
-const projects = getAllProjects();
+interface ProjectItem {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  pinned: boolean;
+  tags: string[] | null;
+}
 
 export default function Home() {
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [posts, setPosts] = useState<PostMeta[]>([]);
 
   useEffect(() => {
+    fetch("/api/content/projects")
+      .then((r) => r.json())
+      .then((data: ProjectItem[]) => setProjects(data.filter((p) => p.pinned)))
+      .catch(() => {});
     fetchPostIndex().then((p) => setPosts(p.slice(0, 3)));
   }, []);
 
@@ -93,9 +104,9 @@ export default function Home() {
       {/* DIVIDER */}
       <KilnDivider />
 
-      {/* SELECTED WORK */}
+      {/* PROJECTS */}
       <section className="px-(--page-gutter) py-14 md:py-20">
-        <SectionHeader label="Selected Work" />
+        <SectionHeader label="Projects" />
 
         <div>
           {projects.map((project, index) => (
@@ -112,7 +123,7 @@ export default function Home() {
                   {project.title}
                 </div>
                 <div className="mt-[0.4rem] flex gap-2">
-                  {project.tags.slice(0, 3).map((tag) => (
+                  {project.tags?.slice(0, 3).map((tag) => (
                     <Badge key={tag} variant="tag">
                       {tag}
                     </Badge>
@@ -120,7 +131,7 @@ export default function Home() {
                 </div>
               </div>
               <span className="hidden text-[0.88rem] leading-[1.5] text-muted-foreground md:block">
-                {project.description}
+                {project.subtitle}
               </span>
               <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
                 <ArrowUpRight className="size-5" />
@@ -140,9 +151,9 @@ export default function Home() {
       {/* DIVIDER */}
       <KilnDivider />
 
-      {/* WRITING */}
+      {/* BLOG */}
       <section className="px-(--page-gutter) py-14 md:py-20">
-        <SectionHeader label="Writing" />
+        <SectionHeader label="Blog" />
 
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

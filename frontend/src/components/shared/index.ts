@@ -1,4 +1,3 @@
-export { ProjectCard } from "./ProjectCard";
 export { BlogPostCard } from "./BlogPostCard";
 export { CodeBlock } from "./CodeBlock";
 export { MarkdownRenderer } from "./MarkdownRenderer";
