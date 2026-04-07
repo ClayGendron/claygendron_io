@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer";
 
 interface ProjectData {
   id: number;
@@ -145,11 +146,7 @@ export default function ProjectDetail() {
               <p className="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
                 Overview
               </p>
-              <div className="prose prose-neutral max-w-none dark:prose-invert prose-p:leading-relaxed prose-p:text-muted-foreground">
-                {project.content.split("\n\n").map((paragraph, i) => (
-                  <p key={i}>{paragraph}</p>
-                ))}
-              </div>
+              <MarkdownRenderer content={project.content} />
             </section>
           )}
 

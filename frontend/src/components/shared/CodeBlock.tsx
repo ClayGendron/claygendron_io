@@ -22,7 +22,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
       <code
         className={cn(
           "px-1.5 py-0.5 rounded-md text-[0.9em]",
-          "bg-muted text-foreground font-mono"
+          "bg-muted text-foreground font-mono",
+          "before:content-none after:content-none"
         )}
       >
         {children}
