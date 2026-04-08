@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend dev\" \"cd backend && .venv/bin/uvicorn app.main:app --reload --port 8001\"",
+    "dev:host": "concurrently -n frontend,backend -c blue,green \"bun run --cwd frontend dev -- --host\" \"cd backend && .venv/bin/uvicorn app.main:app --reload --port 8001 --host 0.0.0.0\"",
     "dev:frontend": "bun run --cwd frontend dev",
     "dev:backend": "cd backend && .venv/bin/uvicorn app.main:app --reload --port 8001",
     "build": "bun run --cwd frontend build",

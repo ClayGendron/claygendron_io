@@ -67,15 +67,6 @@ if FRONTEND_DIR.exists():
         name="assets",
     )
 
-    # Serve content directory (for blog posts)
-    CONTENT_DIR = FRONTEND_DIR / "content"
-    if CONTENT_DIR.exists():
-        app.mount(
-            "/content",
-            StaticFiles(directory=CONTENT_DIR),
-            name="content",
-        )
-
     # Catch-all route for SPA - must be last
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):

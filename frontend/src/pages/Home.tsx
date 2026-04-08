@@ -108,37 +108,45 @@ export default function Home() {
       <section className="px-(--page-gutter) py-14 md:py-20">
         <SectionHeader label="Projects" />
 
-        <div>
-          {projects.map((project, index) => (
-            <Link
-              key={project.slug}
-              to={`/projects/${project.slug}`}
-              className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-[1.8rem] text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
-            >
-              <span className="font-mono text-[0.7rem] text-muted-foreground">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <div className="font-serif text-[1.6rem] font-normal tracking-[-0.01em] transition-colors group-hover:text-primary">
-                  {project.title}
+        {projects.length > 0 ? (
+          <div>
+            {projects.map((project, index) => (
+              <Link
+                key={project.slug}
+                to={`/projects/${project.slug}`}
+                className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-[1.8rem] text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
+              >
+                <span className="font-mono text-[0.7rem] text-muted-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <div className="font-serif text-[1.6rem] font-normal tracking-[-0.01em] transition-colors group-hover:text-primary">
+                    {project.title}
+                  </div>
+                  <div className="mt-[0.4rem] flex gap-2">
+                    {project.tags?.slice(0, 3).map((tag) => (
+                      <Badge key={tag} variant="tag">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-[0.4rem] flex gap-2">
-                  {project.tags?.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="tag">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <span className="hidden text-[0.88rem] leading-[1.5] text-muted-foreground md:block">
-                {project.subtitle}
-              </span>
-              <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
-                <ArrowUpRight className="size-5" />
-              </span>
-            </Link>
-          ))}
-        </div>
+                <span className="hidden text-[0.88rem] leading-[1.5] text-muted-foreground md:block">
+                  {project.subtitle}
+                </span>
+                <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
+                  <ArrowUpRight className="size-5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center">
+            <p className="font-serif text-lg text-muted-foreground">
+              No projects yet. Check back soon.
+            </p>
+          </div>
+        )}
 
         <Link
           to="/projects"

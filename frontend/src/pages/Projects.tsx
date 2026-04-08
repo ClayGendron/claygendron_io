@@ -16,12 +16,14 @@ interface ProjectItem {
 
 export default function Projects() {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/content/projects")
       .then((r) => r.json())
       .then(setProjects)
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, []);
 
   const featured = projects.filter((p) => p.pinned);
@@ -46,115 +48,134 @@ export default function Projects() {
           </p>
         </motion.div>
 
-        {/* Featured Projects */}
-        {featured.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-            className="mb-16"
-          >
-            <div>
-              {featured.map((project, index) => (
-                <motion.div
-                  key={project.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    ease: "easeOut",
-                    delay: 0.15 + index * 0.1,
-                  }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+        >
+          {isLoading ? (
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse border-t border-border pt-7 pb-7"
                 >
-                  <Link
-                    to={`/projects/${project.slug}`}
-                    className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-7 text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
-                  >
-                    <span className="font-mono text-[0.7rem] text-muted-foreground">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <div className="font-serif text-xl font-normal tracking-[-0.01em] transition-colors group-hover:text-primary md:text-[1.6rem]">
-                        {project.title}
-                      </div>
-                      <div className="mt-1.5 flex gap-2">
-                        {project.tags?.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="tag">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <span className="hidden text-[0.88rem] leading-relaxed text-muted-foreground md:block">
-                      {project.subtitle}
-                    </span>
-                    <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
-                      <ArrowUpRight className="size-5" />
-                    </span>
-                  </Link>
-                </motion.div>
+                  <div className="mb-2 h-6 w-1/3 bg-muted" />
+                  <div className="h-4 w-2/3 bg-muted" />
+                </div>
               ))}
             </div>
-          </motion.section>
-        )}
+          ) : projects.length > 0 ? (
+            <>
+              {/* Featured Projects */}
+              {featured.length > 0 && (
+                <section className="mb-16">
+                  <div>
+                    {featured.map((project, index) => (
+                      <motion.div
+                        key={project.slug}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          ease: "easeOut",
+                          delay: 0.15 + index * 0.1,
+                        }}
+                      >
+                        <Link
+                          to={`/projects/${project.slug}`}
+                          className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-7 text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
+                        >
+                          <span className="font-mono text-[0.7rem] text-muted-foreground">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <div>
+                            <div className="font-serif text-xl font-normal tracking-[-0.01em] transition-colors group-hover:text-primary md:text-[1.6rem]">
+                              {project.title}
+                            </div>
+                            <div className="mt-1.5 flex gap-2">
+                              {project.tags?.slice(0, 3).map((tag) => (
+                                <Badge key={tag} variant="tag">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <span className="hidden text-[0.88rem] leading-relaxed text-muted-foreground md:block">
+                            {project.subtitle}
+                          </span>
+                          <span className="hidden text-lg text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
+                            <ArrowUpRight className="size-5" />
+                          </span>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
-        {/* Divider */}
-        {other.length > 0 && (
-          <div className="my-12">
-            <KilnDivider />
-          </div>
-        )}
+              {/* Divider */}
+              {other.length > 0 && (
+                <div className="my-12">
+                  <KilnDivider />
+                </div>
+              )}
 
-        {/* Other Projects */}
-        {other.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.35 }}
-          >
-            <div>
-              {other.map((project, index) => (
-                <motion.div
-                  key={project.slug}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    ease: "easeOut",
-                    delay: 0.4 + index * 0.05,
-                  }}
-                >
-                  <Link
-                    to={`/projects/${project.slug}`}
-                    className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-5 text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
-                  >
-                    <span className="font-mono text-[0.7rem] text-muted-foreground">
-                      {String(featured.length + index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <div className="font-serif text-lg font-normal transition-colors group-hover:text-primary">
-                        {project.title}
-                      </div>
-                      <div className="mt-1 flex gap-2">
-                        {project.tags?.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="tag">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <span className="hidden text-sm text-muted-foreground md:block">
-                      {project.subtitle}
-                    </span>
-                    <span className="hidden text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
-                      <ArrowUpRight className="size-4" />
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
+              {/* Other Projects */}
+              {other.length > 0 && (
+                <section>
+                  <div>
+                    {other.map((project, index) => (
+                      <motion.div
+                        key={project.slug}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          ease: "easeOut",
+                          delay: 0.4 + index * 0.05,
+                        }}
+                      >
+                        <Link
+                          to={`/projects/${project.slug}`}
+                          className="group grid grid-cols-[2rem_1fr] items-baseline gap-4 border-b border-border py-5 text-inherit no-underline transition-[border-color] first:border-t md:grid-cols-[3rem_1fr_2fr_auto] md:gap-8 hover:border-primary/10"
+                        >
+                          <span className="font-mono text-[0.7rem] text-muted-foreground">
+                            {String(featured.length + index + 1).padStart(2, "0")}
+                          </span>
+                          <div>
+                            <div className="font-serif text-lg font-normal transition-colors group-hover:text-primary">
+                              {project.title}
+                            </div>
+                            <div className="mt-1 flex gap-2">
+                              {project.tags?.slice(0, 3).map((tag) => (
+                                <Badge key={tag} variant="tag">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <span className="hidden text-sm text-muted-foreground md:block">
+                            {project.subtitle}
+                          </span>
+                          <span className="hidden text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary md:block">
+                            <ArrowUpRight className="size-4" />
+                          </span>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </>
+          ) : (
+            <div className="py-16 text-center">
+              <p className="font-serif text-lg text-muted-foreground">
+                No projects yet. Check back soon.
+              </p>
             </div>
-          </motion.section>
-        )}
+          )}
+        </motion.div>
       </div>
     </main>
   );
