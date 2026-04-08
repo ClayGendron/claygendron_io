@@ -21,7 +21,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 # ---------------------------------------------------------------------------
 _sessions: dict[str, dict] = {}
 SESSION_COOKIE = "session_id"
-SESSION_TTL = 8 * 3600  # 8 hours
+SESSION_TTL = 2 * 3600  # 2 hours
+OAUTH_STATE_COOKIE = "oauth_state"
+OAUTH_STATE_TTL = 600  # 10 minutes — login flows shouldn't take longer
 
 # ---------------------------------------------------------------------------
 # JWKS cache for token validation
@@ -64,6 +66,7 @@ async def login():
     if not settings.azure_tenant_id or not settings.azure_client_id:
         raise HTTPException(status_code=503, detail="Auth not configured")
 
+    state = secrets.token_urlsafe(32)
     params = urlencode({
         "client_id": settings.azure_client_id,
         "response_type": "code",
@@ -71,17 +74,32 @@ async def login():
         "response_mode": "query",
         "scope": "openid email profile",
         "prompt": "select_account",
+        "state": state,
     })
     auth_url = (
         f"https://login.microsoftonline.com/{settings.azure_tenant_id}"
         f"/oauth2/v2.0/authorize?{params}"
     )
-    return RedirectResponse(auth_url)
+    redirect = RedirectResponse(auth_url)
+    redirect.set_cookie(
+        key=OAUTH_STATE_COOKIE,
+        value=state,
+        httponly=True,
+        secure=not settings.debug,
+        samesite="lax",
+        max_age=OAUTH_STATE_TTL,
+        path="/",
+    )
+    return redirect
 
 
 @router.get("/callback")
-async def callback(code: str, response: Response):
+async def callback(code: str, state: str, request: Request):
     """Exchange authorization code for tokens, create session."""
+    expected_state = request.cookies.get(OAUTH_STATE_COOKIE)
+    if not expected_state or not secrets.compare_digest(expected_state, state):
+        raise HTTPException(status_code=400, detail="Invalid OAuth state")
+
     token_url = (
         f"https://login.microsoftonline.com/{settings.azure_tenant_id}"
         "/oauth2/v2.0/token"
@@ -137,14 +155,13 @@ async def callback(code: str, response: Response):
         or ""
     ).lower()
 
-    if settings.admin_allowed_emails:
-        allowed = {
-            e.strip().lower()
-            for e in settings.admin_allowed_emails.split(",")
-            if e.strip()
-        }
-        if email not in allowed:
-            raise HTTPException(status_code=403, detail="Not authorized")
+    allowed = {
+        e.strip().lower()
+        for e in settings.admin_allowed_emails.split(",")
+        if e.strip()
+    }
+    if not allowed or email not in allowed:
+        raise HTTPException(status_code=403, detail="Not authorized")
 
     # Create server-side session
     session_id = secrets.token_urlsafe(32)
@@ -160,11 +177,12 @@ async def callback(code: str, response: Response):
         key=SESSION_COOKIE,
         value=session_id,
         httponly=True,
-        secure=False,
+        secure=not settings.debug,
         samesite="lax",
         max_age=SESSION_TTL,
         path="/",
     )
+    redirect.delete_cookie(OAUTH_STATE_COOKIE, path="/")
     return redirect
 
 
