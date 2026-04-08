@@ -1,14 +1,14 @@
 [phases.setup]
-nixPkgs = ["python313", "python313Packages.pip", "bun"]
+nixPkgs = ["python313", "uv", "bun"]
 
 [phases.install]
 cmds = [
   "cd frontend && bun install",
-  "cd backend && pip install -r requirements.txt"
+  "cd backend && uv venv && uv pip install -r requirements.txt"
 ]
 
 [phases.build]
 cmds = ["cd frontend && bun run build"]
 
 [start]
-cmd = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips=\"*\""
+cmd = "cd backend && .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips=\"*\""
