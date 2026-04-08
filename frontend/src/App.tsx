@@ -11,6 +11,7 @@ import {
   BlogPost,
   Contact,
 } from "@/pages";
+import NotFound from "@/pages/NotFound";
 
 const AdminRoot = lazy(() => import("@/admin"));
 
@@ -28,6 +29,7 @@ export function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
       <Route
         path="/admin/*"
