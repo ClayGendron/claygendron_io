@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from sqlalchemy import select, update
 from app.database import get_db
+from app.limiter import limiter
 from app.models import Session, PageView, Event
 from app.config import get_settings
 
@@ -84,6 +85,7 @@ def parse_ua(user_agent: str) -> dict:
 
 
 @router.post("/analytics/session", response_model=SessionStartResponse)
+@limiter.limit("10/minute")
 async def start_session(request: Request, body: SessionStartRequest):
     """Start a new analytics session."""
     if not settings.database_url:
@@ -115,7 +117,8 @@ async def start_session(request: Request, body: SessionStartRequest):
 
 
 @router.post("/analytics/pageview", response_model=PageViewResponse)
-async def track_page_view(body: PageViewRequest):
+@limiter.limit("60/minute")
+async def track_page_view(request: Request, body: PageViewRequest):
     """Track a page view."""
     if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
@@ -161,7 +164,8 @@ async def track_page_view(body: PageViewRequest):
 
 
 @router.patch("/analytics/pageview/{page_view_id}")
-async def update_page_view(page_view_id: str, body: UpdatePageViewRequest):
+@limiter.limit("120/minute")
+async def update_page_view(request: Request, page_view_id: str, body: UpdatePageViewRequest):
     """Update page view metrics (time on page, scroll depth)."""
     if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
@@ -189,7 +193,8 @@ async def update_page_view(page_view_id: str, body: UpdatePageViewRequest):
 
 
 @router.post("/analytics/event")
-async def track_event(body: EventRequest):
+@limiter.limit("60/minute")
+async def track_event(request: Request, body: EventRequest):
     """Track a custom event."""
     if not settings.database_url:
         raise HTTPException(status_code=503, detail="Analytics not configured")
@@ -220,7 +225,8 @@ async def track_event(body: EventRequest):
 
 
 @router.post("/analytics/heartbeat")
-async def heartbeat(session_id: str):
+@limiter.limit("30/minute")
+async def heartbeat(request: Request, session_id: str):
     """Keep session alive and update last_seen."""
     if not settings.database_url:
         return {"success": True}  # Silently succeed if not configured

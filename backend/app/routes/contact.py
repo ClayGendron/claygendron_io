@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from html import escape
+
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, EmailStr, Field
 import resend
 
 from app.config import get_settings
+from app.limiter import limiter
 
 router = APIRouter(tags=["contact"])
 settings = get_settings()
@@ -20,7 +23,8 @@ class ContactResponse(BaseModel):
 
 
 @router.post("/contact", response_model=ContactResponse)
-async def submit_contact(request: ContactRequest):
+@limiter.limit("5/hour")
+async def submit_contact(request: Request, body: ContactRequest):
     """
     Submit a contact form message.
     Sends an email notification via Resend.
@@ -39,16 +43,16 @@ async def submit_contact(request: ContactRequest):
             {
                 "from": settings.from_email,
                 "to": settings.contact_email,
-                "subject": f"New contact from {request.name}",
+                "subject": f"New contact from {escape(body.name)}",
                 "html": f"""
                 <h2>New Contact Form Submission</h2>
-                <p><strong>From:</strong> {request.name}</p>
-                <p><strong>Email:</strong> {request.email}</p>
+                <p><strong>From:</strong> {escape(body.name)}</p>
+                <p><strong>Email:</strong> {escape(body.email)}</p>
                 <hr>
                 <p><strong>Message:</strong></p>
-                <p>{request.message.replace(chr(10), '<br>')}</p>
+                <p>{escape(body.message).replace(chr(10), '<br>')}</p>
                 """,
-                "reply_to": request.email,
+                "reply_to": body.email,
             }
         )
 
@@ -56,10 +60,10 @@ async def submit_contact(request: ContactRequest):
         resend.Emails.send(
             {
                 "from": settings.from_email,
-                "to": request.email,
+                "to": body.email,
                 "subject": "Thanks for reaching out!",
                 "html": f"""
-                <p>Hi {request.name},</p>
+                <p>Hi {escape(body.name)},</p>
                 <p>Thanks for getting in touch! I've received your message and will get back to you soon.</p>
                 <p>Best,<br>Clay</p>
                 <hr>
@@ -73,8 +77,8 @@ async def submit_contact(request: ContactRequest):
             message="Message sent successfully! I'll get back to you soon.",
         )
 
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to send message: {str(e)}",
+            detail="Failed to send message. Please try again later.",
         )

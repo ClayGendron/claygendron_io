@@ -4,10 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.config import get_settings
 from app.database import init_db, close_db
 from app.auth import router as auth_router
+from app.limiter import limiter
 from app.routes import contact, analytics, admin, content, admin_content
 
 settings = get_settings()
@@ -31,13 +34,22 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware for development
+# Rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS middleware
+_cors_origins = (
+    ["http://localhost:8000", "http://localhost:8001"]
+    if settings.debug
+    else [settings.frontend_url]
+)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://localhost:8001"],
+    allow_origins=_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 # Include API routes
@@ -70,10 +82,13 @@ if FRONTEND_DIR.exists():
     # Catch-all route for SPA - must be last
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        # Check if it's a file request
-        file_path = FRONTEND_DIR / full_path
+        index = FRONTEND_DIR / "index.html"
+        try:
+            file_path = (FRONTEND_DIR / full_path).resolve()
+            file_path.relative_to(FRONTEND_DIR.resolve())
+        except (ValueError, OSError):
+            return FileResponse(index)
+
         if file_path.is_file():
             return FileResponse(file_path)
-
-        # For all other routes, serve index.html (SPA routing)
-        return FileResponse(FRONTEND_DIR / "index.html")
+        return FileResponse(index)
