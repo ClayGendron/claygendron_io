@@ -61,7 +61,7 @@ export function Footer() {
               <strong className="underline decoration-primary underline-offset-4">together</strong>.
             </h2>
             <a
-              href="mailto:chg@claygendron.io"
+              href="/contact"
               className="inline-flex items-center gap-2 border border-white/25 px-6 py-3 text-[0.82rem] font-normal text-white transition-all duration-250 hover:border-primary hover:text-primary"
             >
               Contact me &nbsp;&rarr;
@@ -69,7 +69,7 @@ export function Footer() {
           </div>
 
           {/* Right: Social links */}
-          <div className="flex flex-col items-start gap-3 md:items-end md:justify-end">
+          <div className="flex flex-col items-start gap-3 md:items-end md:justify-center">
             {socialLinks.map((link) => (
               <a
                 key={link.label}
@@ -81,13 +81,6 @@ export function Footer() {
                 {link.label}
               </a>
             ))}
-          </div>
-        </div>
-
-        {/* Calendly placeholder */}
-        <div className="mt-12">
-          <div className="border border-dashed border-white/12 p-12 text-center font-mono text-[0.65rem] uppercase tracking-[0.1em] text-white/20">
-            [ Calendly embed — book a call ]
           </div>
         </div>
 
