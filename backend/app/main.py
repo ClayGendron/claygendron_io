@@ -11,7 +11,7 @@ from app.config import get_settings
 from app.database import init_db, close_db
 from app.auth import router as auth_router
 from app.limiter import limiter
-from app.routes import contact, analytics, admin, content, admin_content
+from app.routes import analytics, admin, content, admin_content
 
 settings = get_settings()
 
@@ -54,7 +54,6 @@ app.add_middleware(
 
 # Include API routes
 app.include_router(auth_router, prefix="/api")
-app.include_router(contact.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
 app.include_router(admin.router, prefix="/api/admin")
 app.include_router(content.router, prefix="/api/content")

@@ -10,11 +10,6 @@ class Settings(BaseSettings):
     app_name: str = "claygendron.io"
     debug: bool = False
 
-    # Resend settings
-    resend_api_key: str = ""
-    contact_email: str = "chg@claygendron.io"
-    from_email: str = "chg@claygendron.io"
-
     # Microsoft Entra ID (Azure AD)
     azure_tenant_id: str = ""
     azure_client_id: str = ""
