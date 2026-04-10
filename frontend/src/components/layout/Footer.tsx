@@ -28,7 +28,7 @@ function LinkedInIcon({ className }: { className?: string }) {
 
 const socialLinks = [
   { href: "https://github.com/claygendron", icon: GitHubIcon, label: "GitHub" },
-  { href: "https://linkedin.com/in/claygendron", icon: LinkedInIcon, label: "LinkedIn" },
+  { href: "https://www.linkedin.com/in/clay-gendron-aa1992b6/", icon: LinkedInIcon, label: "LinkedIn" },
   { href: "mailto:chg@claygendron.io", icon: Mail, label: "Email" },
 ];
 
